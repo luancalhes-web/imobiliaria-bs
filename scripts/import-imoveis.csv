@@ -1,0 +1,6 @@
+titulo,finalidade,tipo,cidade,preco,area,quartos,banheiros,vagas,codigo,endereco,maps_url,descricao
+"Apartamento 2 quartos Boqueirão","venda","Apartamento","Santos","320000","72","2","1","1","APT-001","Rua das Flores, 123 - Boqueirão, Santos/SP","https://www.google.com/maps/embed?pb=...","Lindo apartamento com vista parcial para o mar, ótima localização próximo ao metrô."
+"Casa 3 quartos Praia Grande","venda","Casa","Praia Grande","480000","120","3","2","2","CSA-001","Av. Presidente Kennedy, 456 - Canto do Forte, Praia Grande/SP","https://www.google.com/maps/embed?pb=...","Espaçosa casa com quintal, churrasqueira e 2 vagas de garagem."
+"Kitnet Centro Santos","aluguel","Kitnet","Santos","1200","28","1","1","0","KIT-001","Rua XV de Novembro, 789 - Centro, Santos/SP","https://www.google.com/maps/embed?pb=...","Kitnet reformada no centro de Santos, ideal para profissionais."
+"Cobertura Guarujá","venda","Cobertura","Guarujá","580000","180","3","3","2","COB-001","Av. Puglisi, 1000 - Pitangueiras, Guarujá/SP","https://www.google.com/maps/embed?pb=...","Cobertura duplex com terraço e vista para o mar."
+"Apartamento 1 quarto São Vicente","aluguel","Apartamento","São Vicente","900","45","1","1","1","APT-002","Rua João Pessoa, 321 - Centro, São Vicente/SP","https://www.google.com/maps/embed?pb=...","Apartamento mobiliado, pronto para morar."
