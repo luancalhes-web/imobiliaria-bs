@@ -1,18 +1,20 @@
 import { createBot } from "./bot/bot";
 import { registerMonthlyJob } from "./scheduler/monthlyJob";
 
-async function main() {
-  const bot = createBot();
-  registerMonthlyJob(bot);
+const bot = createBot();
+registerMonthlyJob(bot);
 
-  await bot.launch();
-  console.log("Agente financeiro rodando (long polling)...");
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-  process.once("SIGINT", () => bot.stop("SIGINT"));
-  process.once("SIGTERM", () => bot.stop("SIGTERM"));
-}
-
-main().catch((err) => {
-  console.error("Falha ao iniciar o agente:", err);
-  process.exit(1);
-});
+// bot.launch() só resolve quando o bot para (fica em loop de long-polling) — por
+// isso o log de "iniciado" usa o callback onLaunch, chamado logo após o getMe(),
+// e os handlers de SIGINT/SIGTERM são registrados antes de chamar launch().
+bot
+  .launch(() => {
+    console.log("Agente financeiro rodando (long polling)...");
+  })
+  .catch((err) => {
+    console.error("Falha ao iniciar o agente:", err);
+    process.exit(1);
+  });
