@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: finance_agent
+    ports:
+      - "5432:5432"
+    volumes:
+      - finance_agent_pgdata:/var/lib/postgresql/data
+
+volumes:
+  finance_agent_pgdata:
