@@ -1,6 +1,7 @@
 # Plano: meus assessores de IA no WhatsApp (cópia do "Meu Assessor")
 
 **Regra do projeto: o site é a referência. Tudo deve ficar idêntico ao meuassessor.com. O que não estiver no site não entra.**
+**Exceção: os limites do site (que é um serviço pago). Aqui fica tudo ilimitado, a menos que remover o limite gere custo ou esbarre num limite técnico (ver seção 7).**
 
 Pesquisa feita em 07/10/2026 em meuassessor.com: páginas /assessores, /theo, /martin, /sofi, /luna, /italo, /rita, /funcionalidades, /como-usar e /seguranca.
 
@@ -121,7 +122,7 @@ Competências: Pesquisas, Cotações, Preços, Regras, Fontes.
 | I7 | **Entra no meio da resposta de outro assessor** com o dado e a fonte, e o especialista fecha | "esse celular tá caro?": Martin abre, Ítalo traz o preço, Martin conclui |
 | I8 | **Não manda dados pessoais** para a busca | |
 | I9 | **Histórico de pesquisas** por dia | |
-| I10 | **Limite de 5 pesquisas por dia** ("entrei em agosto e ainda sou estagiário") | |
+| I10 | No site: limite de 5 pesquisas por dia. **Aqui: ilimitado** (ver seção 7) | |
 
 ### 2.6 RITA: Assistente Fiscal (nota fiscal)
 Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfil Fiscal, Impostos, Tributos, Alíquota.
@@ -188,7 +189,7 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 | Bancos | **Pluggy** ou **Belvo** (agregadores de Open Finance, pagos) | Martin. Começar com lançamento manual e entrar com o Open Finance depois |
 | Nota fiscal | **Focus NFe**, **NFE.io** ou **PlugNotas** (API de NFS-e) | Rita |
 | Cobrança | **Asaas** ou **Mercado Pago** (link de pagamento / Pix) | Martin M14 |
-| Pesquisa | Ferramenta de web search da Claude API | Ítalo, com fontes e limite de 5 por dia |
+| Pesquisa | Ferramenta de web search da Claude API | Ítalo, com fontes e sem limite |
 
 ---
 
@@ -243,3 +244,33 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 - **Libs não oficiais** (Baileys/Evolution API) permitem grupos, mas precisam de um servidor ligado 24h (não roda na Vercel) e têm risco de banimento do número.
 - **Mensagens proativas** (resumo diário, alertas) fora da janela de 24h exigem templates aprovados pela Meta.
 - **Segurança:** o bot nunca move dinheiro (Open Finance é somente leitura) e só responde a números autorizados.
+
+---
+
+## 7. Limites do site vs. o nosso sistema
+
+Regra: se tirar o limite não custa nada, fica **ilimitado**. Se custa ou se existe um limite técnico de outra empresa, está explicado abaixo.
+
+| Limite no site | O que muda para você | Decisão |
+|---|---|---|
+| Ítalo: **5 pesquisas por dia** | Cada pesquisa custa centavos na Claude API (cerca de US$ 0,01 por busca, mais o texto processado). Mesmo 50 por dia dariam poucos dólares por mês | **Ilimitado** |
+| Parcelamento **até 60x** | Não custa nada | **Ilimitado** |
+| Editar/Desfazer **só por 24h** | Não custa nada. Você pode corrigir qualquer lançamento a qualquer momento | **Sem prazo** |
+| Conflitos de agenda **só 14 dias à frente** | Não custa nada | **Agenda inteira** (todos os compromissos futuros) |
+| Link público de agenda: duração de **15 min a 3h** | Não custa nada | **Qualquer duração** |
+| Arquivos de **até 50 MB** | Esse limite vem do WhatsApp, não do site. A API do WhatsApp aceita documento de até 100 MB, imagem até 5 MB, áudio e vídeo até 16 MB. Armazenamento no Vercel Blob/Supabase tem camada grátis e depois custa centavos por GB | **O máximo que o WhatsApp deixar** (100 MB por documento) |
+| Mensagens, notas, lembretes, documentos e usuários | Já são ilimitados no site | **Ilimitado** |
+| Mensagens que **você** manda para os assessores | A conversa iniciada por você é grátis no WhatsApp; o único custo é a Claude API, de centavos por mensagem | **Ilimitado** |
+
+**Configurações padrão do site** (não são limites, são valores iniciais; mantemos iguais e você pode mudar falando com o assessor):
+- Lembrete 1h antes do compromisso
+- Aviso de renovação 15 dias antes
+- Alerta de orçamento ao chegar em 70%
+- Resumo do dia às 7h
+- Duração padrão de 30 min por compromisso
+- Mapa de calor de 28 dias no painel da Sofi
+
+**Os únicos pontos que custam e não dá para zerar:**
+1. **Mensagens que o robô inicia** (resumo das 7h, alertas, lembretes, cobranças para terceiros) quando você não falou com ele nas últimas 24h. O WhatsApp cobra por mensagem de *template*: centavos de real cada uma. Quem usa todo dia quase sempre está dentro da janela de 24h, e aí é grátis.
+2. **Open Finance (Pluggy/Belvo), nota fiscal (Focus NFe/NFE.io) e cobrança (Asaas)** cobram por uso das empresas parceiras. O limite delas é o plano que você contratar.
+3. **Bancos disponíveis:** o site fala em 114 instituições. Esse número depende do agregador escolhido, não de nós.
