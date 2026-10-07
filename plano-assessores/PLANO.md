@@ -1,5 +1,7 @@
 # Plano: meus assessores de IA no WhatsApp (cópia do "Meu Assessor")
 
+**Regra do projeto: o site é a referência. Tudo deve ficar idêntico ao meuassessor.com. O que não estiver no site não entra.**
+
 Pesquisa feita em 07/10/2026 em meuassessor.com: páginas /assessores, /theo, /martin, /sofi, /luna, /italo, /rita, /funcionalidades, /como-usar e /seguranca.
 
 ---
@@ -34,10 +36,9 @@ Competências: Gestão de Processos, KPIs, Automação, Delegação, Pendências
 | T6 | **Monitoramento 24h** das integrações (banco, Google) | "o Nubank desconectou, reconecte aqui" |
 | T7 | **Log de tudo** que os assessores fizeram (no exemplo, 2.610 movimentos em 12 meses) | |
 | T8 | **Relatórios / KPIs** do mês | |
-| T9 | **Metas com prazo** (o seu caso): quebra a meta em tarefas e manda cada parte para o assessor certo | "preciso disso resolvido até 30/12" vira tarefas (Luna) + agenda (Sofi) + acompanhamento semanal (Theo) |
-| T10 | **Gestão de acesso**: convites, sócios, permissões | "gera um código de convite pra minha sócia", "quem tem acesso à conta?", "meu sócio vê só os gastos da empresa" |
-| T11 | **Distribuição** de resumos para outras pessoas | "manda o resumo do dia pra mim e pro Léo" |
-| T12 | **Conta PF e PJ** (CPF e CNPJ) | "conecta o banco da empresa no CNPJ também" |
+| T9 | **Gestão de acesso**: convites, sócios, permissões | "gera um código de convite pra minha sócia", "quem tem acesso à conta?", "meu sócio vê só os gastos da empresa" |
+| T10 | **Distribuição** de resumos para outras pessoas | "manda o resumo do dia pra mim e pro Léo" |
+| T11 | **Conta PF e PJ** (CPF e CNPJ) | "conecta o banco da empresa no CNPJ também" |
 
 ### 2.2 MARTIN: Gerente Financeiro
 Competências: Conciliação Bancária, Fluxo de Caixa, Análise Financeira, Open Finance, Gastos por Categoria, Contas a Receber.
@@ -120,7 +121,7 @@ Competências: Pesquisas, Cotações, Preços, Regras, Fontes.
 | I7 | **Entra no meio da resposta de outro assessor** com o dado e a fonte, e o especialista fecha | "esse celular tá caro?": Martin abre, Ítalo traz o preço, Martin conclui |
 | I8 | **Não manda dados pessoais** para a busca | |
 | I9 | **Histórico de pesquisas** por dia | |
-| | Limite no original: 5 pesquisas por dia. Para você, sem limite. | |
+| I10 | **Limite de 5 pesquisas por dia** ("entrei em agosto e ainda sou estagiário") | |
 
 ### 2.6 RITA: Assistente Fiscal (nota fiscal)
 Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfil Fiscal, Impostos, Tributos, Alíquota.
@@ -135,7 +136,7 @@ Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfi
 | R6 | Avisa sobre **mudança de alíquota** e quando o faturamento se aproxima do limite de faixa (ex.: teto do MEI) | |
 | R7 | Manda o imposto calculado para o **Martin** lançar no fluxo de caixa | |
 
-### 2.7 Assessores "em seleção" no site (fase 2, opcional)
+### 2.7 Assessores "em processo de seleção" no site (ainda não disponíveis lá)
 | Assessor | Função |
 |---|---|
 | **Hugo**, Concierge | reservas, compras e entregas, dicas da cidade |
@@ -146,8 +147,6 @@ Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfi
 | **Sara**, Conselheira pessoal | decisões difíceis, prós e contras, conversa franca |
 | **Ravi**, Imobiliário | busca imóvel, avalia se o preço faz sentido, revisa documentação |
 | **Zoe**, Stylist | looks do dia, guarda-roupa, compras |
-
-> Para o seu negócio de imobiliária, **Iago (comercial)** e **Ravi (imobiliário)** são bons candidatos a entrar logo depois dos 6 principais.
 
 ---
 
@@ -189,7 +188,7 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 | Bancos | **Pluggy** ou **Belvo** (agregadores de Open Finance, pagos) | Martin. Começar com lançamento manual e entrar com o Open Finance depois |
 | Nota fiscal | **Focus NFe**, **NFE.io** ou **PlugNotas** (API de NFS-e) | Rita |
 | Cobrança | **Asaas** ou **Mercado Pago** (link de pagamento / Pix) | Martin M14 |
-| Pesquisa | Ferramenta de web search da Claude API | Ítalo, com fontes |
+| Pesquisa | Ferramenta de web search da Claude API | Ítalo, com fontes e limite de 5 por dia |
 
 ---
 
@@ -210,7 +209,7 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 10. Sofi: Google Agenda nas duas vias, lembretes e resumo das 7h (S1 a S9).
 11. Recibo com Editar e Desfazer (botões interativos do WhatsApp).
 12. Áudio: transcrição antes de mandar para o Theo.
-13. **Teste do seu caso:** "preciso ter X resolvido até 30/12". Theo cria o projeto (Luna), marca os marcos na agenda (Sofi) e cobra você toda semana.
+13. **Teste igual ao exemplo do site:** um áudio com dois pedidos (marcar reunião + cobrança). O Theo manda um para a Sofi e o outro para o Martin e responde de forma consolidada em cerca de 2 minutos.
 
 ### Fase 2: Martin + Ítalo (semanas 4 e 5)
 14. Martin manual: lançamentos, recorrentes, parcelas, orçamento, consultas, "quem me deve" (M1 a M5, M7, M9, M10, M13, M15).
@@ -227,8 +226,8 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 ### Fase 4: extras
 22. Painel web com as "mesas" de cada assessor (na Vercel mesmo).
 23. Link público de agenda (S15) e conflitos (S14).
-24. Convites e permissões para sócio ou secretária (T10).
-25. Novos assessores: Iago (comercial) e Ravi (imobiliário).
+24. Convites e permissões para sócio ou secretária (T9).
+25. Os assessores "em seleção" (2.7) só entram quando forem lançados no site, e do jeito que o site os descrever.
 
 ---
 
