@@ -9,9 +9,9 @@ Pesquisa feita em 07/10/2026 em meuassessor.com: páginas /assessores, /theo, /m
 
 ## 1. Como o produto original funciona (resumo)
 
-- Uma **única conversa no WhatsApp** com um "escritório" de assessores. Cada resposta vem assinada pelo assessor responsável (ex.: "*Sofi* · secretária executiva").
+- Uma **única conversa no WhatsApp** com um "escritório" de assessores. Cada resposta vem assinada pelo assessor responsável (no nosso sistema, a assinatura é só a função: "*Agenda:* Marquei o dentista terça às 10h.").
 - Aceita **texto, áudio, foto, PDF e print**.
-- **Theo** é o diretor: recebe o pedido, divide entre os outros e devolve **uma resposta só**, consolidada.
+- O **Diretor** recebe o pedido, divide entre os outros e devolve **uma resposta só**, consolidada.
 - Todo registro gera um **recibo** com os botões **Editar** e **Desfazer**, que valem por 24h.
 - **Painel web** com uma "mesa" para cada assessor. Os dados vêm da conversa, então não é preciso lançar nada duas vezes.
 - Integrações: Google Agenda, Google Meet, Gmail, Open Finance (114 bancos, somente leitura), WhatsApp Business API, Drive próprio.
@@ -24,12 +24,24 @@ Pesquisa feita em 07/10/2026 em meuassessor.com: páginas /assessores, /theo, /m
 
 ## 2. Lista dos assessores, um por um
 
-### 2.1 THEO: Diretor de Operações (o "cérebro", que fala com os outros)
+No nosso sistema, nenhum assessor tem nome de pessoa: o nome é a própria função, de forma simples.
+
+| No site | Nosso nome |
+|---|---|
+| Theo | **Diretor** |
+| Martin | **Financeiro** |
+| Sofi | **Agenda** |
+| Luna | **Documentos** |
+| Ítalo | **Pesquisa** |
+| Rita | **Fiscal** |
+| Hugo, Lara, Max, Dante, Iago, Sara, Ravi, Zoe (em seleção) | **Concierge, Nutrição, Treino, Jurídico, Comercial, Conselheiro, Imóveis, Estilo** |
+
+### 2.1 DIRETOR: diretor de operações (o "cérebro", que fala com os outros)
 Competências: Gestão de Processos, KPIs, Automação, Delegação, Pendências, Relatórios.
 
 | # | Função | Exemplo |
 |---|---|---|
-| T1 | Recebe todo pedido e faz a **triagem**: decide qual assessor resolve | áudio "marca reunião com o João e cobra 300 dele" vai para Sofi + Martin |
+| T1 | Recebe todo pedido e faz a **triagem**: decide qual assessor resolve | áudio "marca reunião com o João e cobra 300 dele" vai para Agenda + Financeiro |
 | T2 | **Resposta unificada**: junta o que os outros fizeram numa mensagem só | |
 | T3 | **"Lê o seu dia antes de você"**: olha agenda, contas e tarefas e aponta o que importa | |
 | T4 | **Pendências**: lista o que está atrasado ou falhou (aviso não entregue, banco desconectado) | |
@@ -41,7 +53,7 @@ Competências: Gestão de Processos, KPIs, Automação, Delegação, Pendências
 | T10 | **Distribuição** de resumos para outras pessoas | "manda o resumo do dia pra mim e pro Léo" |
 | T11 | **Conta PF e PJ** (CPF e CNPJ) | "conecta o banco da empresa no CNPJ também" |
 
-### 2.2 MARTIN: Gerente Financeiro
+### 2.2 FINANCEIRO: gerente financeiro
 Competências: Conciliação Bancária, Fluxo de Caixa, Análise Financeira, Open Finance, Gastos por Categoria, Contas a Receber.
 
 | # | Função | Exemplo |
@@ -66,14 +78,14 @@ Competências: Conciliação Bancária, Fluxo de Caixa, Análise Financeira, Ope
 | M18 | Por cliente ou fornecedor (PJ) | "quanto recebi da Ótica Vieira esse mês?" |
 | | **Regra:** nunca transfere nem paga nada. Só lê e registra. | |
 
-### 2.3 SOFI: Secretária Executiva (agenda)
+### 2.3 AGENDA: secretária executiva
 Competências: Agenda, E-mail, Reuniões, Google Agenda, Lembretes, Atas.
 
 | # | Função | Exemplo |
 |---|---|---|
 | S1 | Marca compromisso com **linguagem natural** e pergunta o que faltar | "marca dentista terça às dez" |
 | S2 | **Recorrência** | "toda segunda 9h aula de inglês" |
-| S3 | **Google Agenda nas duas vias**: o que você cria lá ela vê, e o que ela cria aparece lá | "puxa minha semana do google agenda" |
+| S3 | **Google Agenda nas duas vias**: o que você cria lá o assessor vê, e o que ele cria aparece lá | "puxa minha semana do google agenda" |
 | S4 | Lembrete **1h antes**, ou no horário que você pedir | |
 | S5 | **Resumo diário** às 7h (horário configurável), em ordem, com o que vence e o que está atrasado | "bom dia! o que eu tenho hoje?" |
 | S6 | "**O que vem agora?**" | |
@@ -89,7 +101,7 @@ Competências: Agenda, E-mail, Reuniões, Google Agenda, Lembretes, Atas.
 | S16 | **Aviso de saída** considerando o trânsito | |
 | S17 | **E-mail** (Gmail) | |
 
-### 2.4 LUNA: Organização & Documentos (+ tarefas)
+### 2.4 DOCUMENTOS: organização, documentos e tarefas
 Competências: Documentos, Notas Fiscais, Tarefas, Drive, Projetos, Renovações.
 
 | # | Função | Exemplo |
@@ -106,9 +118,9 @@ Competências: Documentos, Notas Fiscais, Tarefas, Drive, Projetos, Renovações
 | L10 | **Concluir tarefa** e ver produtividade | "quantas tarefas você fechou na semana?" |
 | L11 | **Listas** (mercado, checklist) | "adiciona sabão em pó na lista" |
 | L12 | **Ideias** guardadas sem prazo e achadas por assunto | "o que eu tinha anotado sobre a expansão?" |
-| L13 | Passa o gasto da nota para o **Martin** lançar | |
+| L13 | Passa o gasto da nota para o **Financeiro** lançar | |
 
-### 2.5 ÍTALO: Estagiário de Pesquisas
+### 2.5 PESQUISA: estagiário de pesquisas
 Competências: Pesquisas, Cotações, Preços, Regras, Fontes.
 
 | # | Função | Exemplo |
@@ -119,12 +131,12 @@ Competências: Pesquisas, Cotações, Preços, Regras, Fontes.
 | I4 | **Avaliação de lugar** | "esse restaurante é bom mesmo?" |
 | I5 | **Comparação** | "qual desses dois fones é melhor?" |
 | I6 | **Sempre cita a fonte**, com botão "Ver fonte". Nunca inventa número; se não confirmou, diz isso | |
-| I7 | **Entra no meio da resposta de outro assessor** com o dado e a fonte, e o especialista fecha | "esse celular tá caro?": Martin abre, Ítalo traz o preço, Martin conclui |
+| I7 | **Entra no meio da resposta de outro assessor** com o dado e a fonte, e o especialista fecha | "esse celular tá caro?": Financeiro abre, Pesquisa traz o preço, Financeiro conclui |
 | I8 | **Não manda dados pessoais** para a busca | |
 | I9 | **Histórico de pesquisas** por dia | |
 | I10 | No site: limite de 5 pesquisas por dia. **Aqui: ilimitado** (ver seção 7) | |
 
-### 2.6 RITA: Assistente Fiscal (nota fiscal)
+### 2.6 FISCAL: assistente fiscal (nota fiscal)
 Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfil Fiscal, Impostos, Tributos, Alíquota.
 
 | # | Função | Exemplo |
@@ -135,19 +147,19 @@ Competências: Cadastro de Empresas, Emissão de NF, Acompanhamento de NF, Perfi
 | R4 | **Acompanha** a nota até ser autorizada e trata rejeição e cancelamento | |
 | R5 | **Calcula o imposto** pelo regime e avisa antes do vencimento (DAS etc.) | |
 | R6 | Avisa sobre **mudança de alíquota** e quando o faturamento se aproxima do limite de faixa (ex.: teto do MEI) | |
-| R7 | Manda o imposto calculado para o **Martin** lançar no fluxo de caixa | |
+| R7 | Manda o imposto calculado para o **Financeiro** lançar no fluxo de caixa | |
 
 ### 2.7 Assessores "em processo de seleção" no site (ainda não disponíveis lá)
 | Assessor | Função |
 |---|---|
-| **Hugo**, Concierge | reservas, compras e entregas, dicas da cidade |
-| **Lara**, Nutrição | cardápio da semana, lista de compras, rotina alimentar |
-| **Max**, Atividade física | treino da semana, cobrança de constância, evolução |
-| **Dante**, Jurídico | revisa contrato antes de assinar, prazos legais, direitos do dia a dia |
-| **Iago**, Comercial | follow-up de clientes, propostas e orçamentos, funil organizado |
-| **Sara**, Conselheira pessoal | decisões difíceis, prós e contras, conversa franca |
-| **Ravi**, Imobiliário | busca imóvel, avalia se o preço faz sentido, revisa documentação |
-| **Zoe**, Stylist | looks do dia, guarda-roupa, compras |
+| **Concierge** | reservas, compras e entregas, dicas da cidade |
+| **Nutrição** | cardápio da semana, lista de compras, rotina alimentar |
+| **Treino** | treino da semana, cobrança de constância, evolução |
+| **Jurídico** | revisa contrato antes de assinar, prazos legais, direitos do dia a dia |
+| **Comercial** | follow-up de clientes, propostas e orçamentos, funil organizado |
+| **Conselheiro** | decisões difíceis, prós e contras, conversa franca |
+| **Imóveis** | busca imóvel, avalia se o preço faz sentido, revisa documentação |
+| **Estilo** | looks do dia, guarda-roupa, compras |
 
 ---
 
@@ -160,20 +172,20 @@ Você (WhatsApp)
 WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, função /api/whatsapp)
                                                      │
                                                      ▼
-                                          THEO (orquestrador, Claude API)
-                                    ┌──────┬──────┬──────┬──────┬──────┐
-                                    ▼      ▼      ▼      ▼      ▼      ▼
-                                 Martin  Sofi   Luna  Ítalo   Rita  (fase 2)
-                                    │      │      │      │      │
-                         Pluggy/Belvo  Google  Vercel Blob  web   Focus NFe /
-                         (Open Finance) Agenda + Postgres  search NFE.io
-                                    │
-                                    ▼
-                         Banco de dados (Neon/Supabase Postgres)
-                         + Vercel Cron / Upstash QStash (resumo 7h, lembretes)
+                                       DIRETOR (orquestrador, Claude API)
+          ┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+          ▼              ▼              ▼              ▼              ▼              ▼
+     Financeiro       Agenda       Documentos       Pesquisa        Fiscal        (fase 2)
+          │              │              │              │              │
+    Pluggy/Belvo     Google Agenda  Vercel Blob    web search    Focus NFe /
+   (Open Finance)    + Meet         + Postgres                   NFE.io
+          │
+          ▼
+   Banco de dados (Neon/Supabase Postgres)
+   + Vercel Cron / Upstash QStash (resumo 7h, lembretes)
 ```
 
-**Como os assessores "conversam entre si":** no WhatsApp tudo acontece numa única conversa com você. A conversa entre os agentes acontece no servidor: Theo chama cada especialista como uma "ferramenta" (sub-agente), junta os resultados e responde. Cada mensagem enviada leva o nome do assessor em negrito, como no site original.
+**Como os assessores "conversam entre si":** no WhatsApp tudo acontece numa única conversa com você. A conversa entre os agentes acontece no servidor: o Diretor chama cada especialista como uma "ferramenta" (sub-agente), junta os resultados e responde. Cada mensagem enviada leva a função do assessor em negrito (ex.: *Financeiro:*).
 
 **Peças e serviços:**
 | Peça | Opção recomendada | Para quê |
@@ -183,13 +195,13 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 | Tarefas agendadas | **Vercel Cron** (resumo das 7h, varreduras diárias) + **Upstash QStash** (lembrete no minuto exato) | No plano Hobby o Vercel Cron só roda 1x por dia, então lembretes precisos precisam do QStash ou do plano Pro |
 | IA | **Claude API**, com tool use e um prompt por assessor | Cérebro de cada assessor |
 | Áudio | Transcrição (Whisper/Deepgram ou similar) | "manda áudio" |
-| Banco de dados | Postgres (Neon ou Supabase, os dois integram com a Vercel) | Lançamentos, tarefas, preferências, log do Theo |
-| Arquivos | **Vercel Blob** ou Supabase Storage | O "Drive" da Luna |
-| Agenda | Google Calendar API + Meet (OAuth da sua conta) | Sofi |
-| Bancos | **Pluggy** ou **Belvo** (agregadores de Open Finance, pagos) | Martin. Começar com lançamento manual e entrar com o Open Finance depois |
-| Nota fiscal | **Focus NFe**, **NFE.io** ou **PlugNotas** (API de NFS-e) | Rita |
-| Cobrança | **Asaas** ou **Mercado Pago** (link de pagamento / Pix) | Martin M14 |
-| Pesquisa | Ferramenta de web search da Claude API | Ítalo, com fontes e sem limite |
+| Banco de dados | Postgres (Neon ou Supabase, os dois integram com a Vercel) | Lançamentos, tarefas, preferências, log do Diretor |
+| Arquivos | **Vercel Blob** ou Supabase Storage | O "Drive" do assessor Documentos |
+| Agenda | Google Calendar API + Meet (OAuth da sua conta) | Agenda |
+| Bancos | **Pluggy** ou **Belvo** (agregadores de Open Finance, pagos) | Financeiro. Começar com lançamento manual e entrar com o Open Finance depois |
+| Nota fiscal | **Focus NFe**, **NFE.io** ou **PlugNotas** (API de NFS-e) | Fiscal |
+| Cobrança | **Asaas** ou **Mercado Pago** (link de pagamento / Pix) | Financeiro M14 |
+| Pesquisa | Ferramenta de web search da Claude API | Pesquisa, com fontes e sem limite |
 
 ---
 
@@ -201,28 +213,28 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 3. Criar o banco Postgres e as tabelas `mensagens`, `preferencias`, `log_acoes`, `tarefas`, `lancamentos`, `compromissos`, `documentos`, `notas_fiscais`.
 4. Cadastrar as variáveis de ambiente: token do WhatsApp, chave da Claude API, URL do banco.
 5. Restringir o bot para responder **só ao seu número** (e aos convidados).
-6. **Teste:** você manda "oi" e o Theo responde.
+6. **Teste:** você manda "oi" e o Diretor responde.
 
-### Fase 1: Theo + Luna + Sofi (semanas 2 e 3)
-7. Theo como orquestrador: triagem (T1), resposta unificada (T2), log (T7) e preferências.
-8. Luna: tarefas, projetos, listas, ideias e prazos (L7 a L12).
-9. Luna: guardar documento e buscar por descrição (L1 a L4).
-10. Sofi: Google Agenda nas duas vias, lembretes e resumo das 7h (S1 a S9).
+### Fase 1: Diretor + Documentos + Agenda (semanas 2 e 3)
+7. Diretor como orquestrador: triagem (T1), resposta unificada (T2), log (T7) e preferências.
+8. Documentos: tarefas, projetos, listas, ideias e prazos (L7 a L12).
+9. Documentos: guardar documento e buscar por descrição (L1 a L4).
+10. Agenda: Google Agenda nas duas vias, lembretes e resumo das 7h (S1 a S9).
 11. Recibo com Editar e Desfazer (botões interativos do WhatsApp).
-12. Áudio: transcrição antes de mandar para o Theo.
-13. **Teste igual ao exemplo do site:** um áudio com dois pedidos (marcar reunião + cobrança). O Theo manda um para a Sofi e o outro para o Martin e responde de forma consolidada em cerca de 2 minutos.
+12. Áudio: transcrição antes de mandar para o Diretor.
+13. **Teste igual ao exemplo do site:** um áudio com dois pedidos (marcar reunião + cobrança). O Diretor manda um para a Agenda e o outro para o Financeiro e responde de forma consolidada em cerca de 2 minutos.
 
-### Fase 2: Martin + Ítalo (semanas 4 e 5)
-14. Martin manual: lançamentos, recorrentes, parcelas, orçamento, consultas, "quem me deve" (M1 a M5, M7, M9, M10, M13, M15).
-15. Martin lendo boleto e comprovante por foto (M4).
-16. Ítalo: pesquisa com fonte e o padrão "entra no meio da resposta" (I1 a I7).
+### Fase 2: Financeiro + Pesquisa (semanas 4 e 5)
+14. Financeiro manual: lançamentos, recorrentes, parcelas, orçamento, consultas, "quem me deve" (M1 a M5, M7, M9, M10, M13, M15).
+15. Financeiro lendo boleto e comprovante por foto (M4).
+16. Pesquisa: pesquisa com fonte e o padrão "entra no meio da resposta" (I1 a I7).
 17. Relatórios em PDF e planilha (M17).
 
 ### Fase 3: integrações pagas (semanas 6 a 8)
 18. Open Finance via Pluggy ou Belvo: saldo, extrato, conciliação e alertas de anomalia (M6, M8, M11).
 19. Cobrança com link de pagamento (M14).
-20. Rita: cadastro da empresa, perfil fiscal, emissão de NFS-e e acompanhamento (R1 a R7).
-21. Sofi: Meet, convites, remarcar e avisar todos, ata (S10 a S13).
+20. Fiscal: cadastro da empresa, perfil fiscal, emissão de NFS-e e acompanhamento (R1 a R7).
+21. Agenda: Meet, convites, remarcar e avisar todos, ata (S10 a S13).
 
 ### Fase 4: extras
 22. Painel web com as "mesas" de cada assessor (na Vercel mesmo).
@@ -253,7 +265,7 @@ Regra: se tirar o limite não custa nada, fica **ilimitado**. Se custa ou se exi
 
 | Limite no site | O que muda para você | Decisão |
 |---|---|---|
-| Ítalo: **5 pesquisas por dia** | Cada pesquisa custa centavos na Claude API (cerca de US$ 0,01 por busca, mais o texto processado). Mesmo 50 por dia dariam poucos dólares por mês | **Ilimitado** |
+| Pesquisa: **5 pesquisas por dia** | Cada pesquisa custa centavos na Claude API (cerca de US$ 0,01 por busca, mais o texto processado). Mesmo 50 por dia dariam poucos dólares por mês | **Ilimitado** |
 | Parcelamento **até 60x** | Não custa nada | **Ilimitado** |
 | Editar/Desfazer **só por 24h** | Não custa nada. Você pode corrigir qualquer lançamento a qualquer momento | **Sem prazo** |
 | Conflitos de agenda **só 14 dias à frente** | Não custa nada | **Agenda inteira** (todos os compromissos futuros) |
@@ -268,7 +280,7 @@ Regra: se tirar o limite não custa nada, fica **ilimitado**. Se custa ou se exi
 - Alerta de orçamento ao chegar em 70%
 - Resumo do dia às 7h
 - Duração padrão de 30 min por compromisso
-- Mapa de calor de 28 dias no painel da Sofi
+- Mapa de calor de 28 dias no painel da Agenda
 
 **Os únicos pontos que custam e não dá para zerar:**
 1. **Mensagens que o robô inicia** (resumo das 7h, alertas, lembretes, cobranças para terceiros) quando você não falou com ele nas últimas 24h. O WhatsApp cobra por mensagem de *template*: centavos de real cada uma. Quem usa todo dia quase sempre está dentro da janela de 24h, e aí é grátis.
