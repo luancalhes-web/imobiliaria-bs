@@ -193,7 +193,7 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 | Canal | **WhatsApp Cloud API** (Meta), com um número só para o bot | Oficial e sem risco de banimento. Funciona por webhook, então roda na Vercel |
 | Servidor | **Vercel** (Next.js) | O webhook recebe as mensagens. Serverless "acorda" a cada mensagem, então fica 24h no ar sem custo parado |
 | Tarefas agendadas | **Vercel Cron** (resumo das 7h, varreduras diárias) + **Upstash QStash** (lembrete no minuto exato) | No plano Hobby o Vercel Cron só roda 1x por dia, então lembretes precisos precisam do QStash ou do plano Pro |
-| IA | **Claude API**, com tool use e um prompt por assessor | Cérebro de cada assessor |
+| IA | **Claude API** (cobrada à parte; o plano Pro do Claude não cobre robôs). Modelo **Haiku 5.5** em todos os assessores; só o Diretor sobe para Sonnet 5.5 se errar a triagem | Cérebro de cada assessor |
 | Áudio | Transcrição (Whisper/Deepgram ou similar) | "manda áudio" |
 | Banco de dados | Postgres (Neon ou Supabase, os dois integram com a Vercel) | Lançamentos, tarefas, preferências, log do Diretor |
 | Arquivos | **Vercel Blob** ou Supabase Storage | O "Drive" do assessor Documentos |
@@ -208,6 +208,8 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 ## 4. Plano de ação por fases
 
 ### Fase 0: Fundação (semana 1)
+> **Código pronto** na pasta `assessores/` (passo a passo em `assessores/README.md`). Falta você criar as contas (Meta, Vercel, Anthropic) e preencher as variáveis.
+
 1. Criar um app na Meta for Developers, ativar o WhatsApp Cloud API e registrar um número novo.
 2. Criar o projeto Next.js na Vercel com a rota `/api/whatsapp` (verificação do webhook + recebimento de mensagens).
 3. Criar o banco Postgres e as tabelas `mensagens`, `preferencias`, `log_acoes`, `tarefas`, `lancamentos`, `compromissos`, `documentos`, `notas_fiscais`.
@@ -244,12 +246,27 @@ WhatsApp Cloud API (Meta, oficial)  ──webhook──►  Vercel (Next.js, fun
 
 ---
 
-## 5. Custos estimados (mensais, ordem de grandeza)
-- **Vercel:** seus créditos (o Pro ajuda por causa do cron).
-- **WhatsApp Cloud API:** conversas iniciadas por você são gratuitas dentro da janela de 24h. Mensagens que o bot inicia, como o resumo das 7h, usam *templates* e são cobradas por mensagem (centavos).
-- **Claude API:** depende do uso; para uma pessoa, normalmente poucas dezenas de dólares.
-- **Postgres e Blob:** camada gratuita no começo.
-- **Pluggy/Belvo, NFS-e e Asaas:** pagos por uso. Ficam para a fase 3.
+## 5. Custos estimados: versão econômica (mensal)
+
+O site cobra **R$ 29,90/mês** (plano anual). A meta é ficar nessa faixa ou abaixo.
+
+**Regras de economia (valem para todo o código):**
+1. **Haiku 5.5 em todos os assessores**, inclusive o Diretor (US$ 0,10 por milhão de tokens de entrada e US$ 0,50 de saída). Se o Diretor errar a triagem, só ele sobe para o Sonnet 5.5.
+2. **Sem IA no que é repetitivo:** lembretes, resumo das 7h, alertas de vencimento e de orçamento são montados por código a partir do banco de dados.
+3. **Prompt caching:** as instruções fixas de cada assessor ficam em cache (leitura a ~1/10 do preço).
+4. **Contexto enxuto:** só as últimas mensagens e os dados do assunto, nunca o histórico inteiro.
+5. **Um especialista por pedido simples:** o Diretor encaminha direto, sem rodada extra.
+6. **Mensagens proativas dentro da janela de 24h** do WhatsApp sempre que possível (de graça).
+
+| Item | Por mês (uso pesado, ~40 msgs/dia) |
+|---|---|
+| IA (Claude API) | R$ 8 a R$ 20 |
+| WhatsApp | R$ 0 a R$ 5 |
+| Pesquisa (web search) e transcrição de áudio | R$ 3 a R$ 8 |
+| Vercel, banco de dados, arquivos | R$ 0 (créditos e camadas grátis) |
+| **Total** | **R$ 11 a R$ 33** (uso leve: abaixo de R$ 15) |
+
+**Fora dessa conta (fase 3, opcionais):** Open Finance (Pluggy/Belvo) e emissão de nota fiscal (Focus NFe/NFE.io) têm mensalidade própria e precisam ser cotados. Cobrança (Asaas) é só uma taxa por cobrança paga.
 
 ## 6. Pontos de atenção
 - **Grupo de WhatsApp com vários bots:** a API oficial funciona melhor em conversa 1:1. Por isso a recomendação é a mesma do site original: uma conversa só, com cada assessor assinando a sua mensagem.
