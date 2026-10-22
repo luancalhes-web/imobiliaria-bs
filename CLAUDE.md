@@ -16,7 +16,7 @@ Este arquivo é a memória compartilhada do projeto: vale tanto para o Claude Co
 | `scripts/import-imoveis.csv` | Imóveis de exemplo para importar |
 | `assessores/` | Assessores de IA no WhatsApp (Next.js na Vercel). Fase 0: webhook + Diretor (Haiku 5.5). Ver `assessores/README.md` |
 | `plano-assessores/PLANO.md` | Plano completo dos assessores (cópia do meuassessor.com) |
-| `placas-nfc/` | Negócio de placas NFC de avaliação (Baixada Santista): painel, preços, scripts de WhatsApp. Ver `placas-nfc/README.md` |
+| `placas-nfc/` | Negócio de placas NFC de avaliação (Baixada Santista): painel, preços, scripts de WhatsApp e geração de áudio com voz clonada ("gera o áudio do X": `roteiros.js` + `gerar_audio.py`). Ver `placas-nfc/README.md` |
 | branch `claude/personal-finance-agent-y5h3xs` | `finance-agent/`: bot financeiro "Tio Patinhas" no Telegram (Prisma, Docker, Render) |
 
 ---
