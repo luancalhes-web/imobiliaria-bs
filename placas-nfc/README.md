@@ -68,7 +68,7 @@ Variações criadas (áudios curtos, ~20 s):
 
 **Objeções:** "tá caro" (1 cliente paga), "vou pensar" (fechando entregas da semana no bairro, reservo?), "já peço avaliação" (a placa tira o atrito), "vai me colocar em 1º?" (**nunca prometer posição**: dizer "mais em cima" / "entre os primeiros"), "cliente não sabe NFC" (tem QR).
 
-**Follow-up:** D+2 "Conseguiu ver o vídeo?" · D+5 "vou estar no [bairro] fazendo entregas" · 7 dias após a entrega: pedir indicação.
+**Follow-up (desde 22/10):** D+2, contados de "Mandei tudo": "Boa tarde!! Conseguiu ver o vídeo? 🙂 Essa semana vou estar aí pelo [bairro] instalando umas placas. Se quiser, passo aí rapidinho e você testa no seu próprio celular, sem compromisso nenhum. Aí você vê se faz sentido pra vocês." · D+5: "Oi! Vou deixar você à vontade 🙂 Se em algum momento quiser testar a placa aí, é só me chamar aqui." · 7 dias após a entrega: pedir indicação.
 
 ## Próximos passos combinados
 
