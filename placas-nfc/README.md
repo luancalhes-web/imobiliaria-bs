@@ -27,9 +27,16 @@ Ordem da conversa: **oi → áudio → vídeo de prova → esperar reagir → pr
 
 ## Scripts que funcionaram
 
-**Oi:** "Oi, tudo bem? Aqui é o Luan, sou aqui do Itararé, em São Vicente 🙂"
+**Oi (atual, desde 22/10/2026):** "Bom dia, tudo bem?? Esse é o número do [nome curto]?" (Bom dia / Boa tarde / Boa noite pela hora). Nome curto, como uma pessoa falaria: "Dra. Fernanda Pires | Biomedicina Estética em São Vicente SP" → "da Dra. Fernanda"; "Clínica de estética de sobrancelhas, unhas e facial dra Claudia" → "da Dra. Claudia" / "da estética da Claudia". O painel gera sozinho e tem o campo "Chamar de" para corrigir.
 
-**Áudio padrão (com gap):** elogio da nota → "vocês têm X avaliações e o [concorrente], a Y km, tem Z; quem procura no Google acaba indo lá primeiro" → temporada chegando (turismo) → como a placa funciona → "Posso te mandar um vídeo rapidinho mostrando?"
+**Áudio (atual), nota 4,8 ou mais:** "Eu vou ser rápido pra não tomar seu tempo, tá? Eu tava dando uma olhada aqui nos [nicho] da região e vi que vocês têm nota [X] no Google, o que tá excelente. Só que vocês têm [N] avaliações, e outros concorrentes da região têm por volta de [faixa] avaliações. Pra quem tá procurando no Google, esse número maior de avaliação acaba passando um pouco mais de credibilidade. / Eu trabalho com uma plaquinha NFC, que é uma placa de avaliação do Google, onde o cliente encosta o celular e já abre direto a tela pra avaliar vocês. / Posso te mandar um vídeo rapidinho mostrando como funciona?"
+- **Nunca falar o nome do concorrente.** Faixa = centena de baixo até a centena do concorrente: 753 → "600 a 700". Abaixo de 200: "mais de 100".
+
+**Áudio (atual), nota 4,7 ou menos:** mesmo começo + "vi que vocês têm [N] avaliações e nota [X] no Google, o que dá pra melhorar. O problema é que as pessoas que têm reclamação geralmente são quem lembra de fazer a avaliação no Google, e quem sai satisfeito não lembra." + mesmo parágrafo da plaquinha + "Posso te mandar um vídeo...".
+
+Depois do áudio, sempre fixos: vídeo + foto do produto, e o áudio fixo de cores / "já levo tudo configurado" / preço. Voz clonada na ElevenLabs (feita em 22/10/2026). Plano: caminho semi-automático, fila de 25 por dia, o Luan aperta enviar.
+
+**Antigos (antes de 22/10):** Oi: "Oi, tudo bem? Aqui é o Luan, sou aqui do Itararé, em São Vicente 🙂". Áudio: elogio da nota → "vocês têm X avaliações e o [concorrente], a Y km, tem Z" → temporada → placa → vídeo.
 
 Variações criadas (áudios curtos, ~20 s):
 - **Já tem muitas avaliações** (ex.: Quiosque Bom Gosto, 100): centenas de clientes por fim de semana e quase ninguém avalia porque esquece. O concorrente já tem quase 700.
