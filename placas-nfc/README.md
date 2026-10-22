@@ -32,7 +32,9 @@ Ordem da conversa: **oi → áudio → vídeo de prova → esperar reagir → pr
 **Áudio (atual), nota 4,8 ou mais:** "Eu vou ser rápido pra não tomar seu tempo, tá? Eu tava dando uma olhada aqui nos [nicho] da região e vi que vocês têm nota [X] no Google, o que tá excelente. Só que vocês têm [N] avaliações, e outros concorrentes da região têm por volta de [faixa] avaliações. Pra quem tá procurando no Google, esse número maior de avaliação acaba passando um pouco mais de credibilidade. / Eu trabalho com uma plaquinha NFC, que é uma placa de avaliação do Google, onde o cliente encosta o celular e já abre direto a tela pra avaliar vocês. / Posso te mandar um vídeo rapidinho mostrando como funciona?"
 - **Nunca falar o nome do concorrente.** Faixa = centena de baixo até a centena do concorrente: 753 → "600 a 700". Abaixo de 200: "mais de 100".
 
-**Áudio (atual), nota 4,7 ou menos:** mesmo começo + "vi que vocês têm [N] avaliações e nota [X] no Google, o que dá pra melhorar. O problema é que as pessoas que têm reclamação geralmente são quem lembra de fazer a avaliação no Google, e quem sai satisfeito não lembra." + mesmo parágrafo da plaquinha + "Posso te mandar um vídeo...".
+**Áudio (atual), nota 4,7 ou menos:** mesmo começo + "vi que vocês têm [N] avaliações e nota [X] no Google, que dá pra melhorar. O problema é que as pessoas que têm reclamação sempre lembram de fazer a avaliação no Google, e quem sai satisfeito, geralmente não lembra."
+
+**Geração dos áudios:** `placas-nfc/gerar_audio.py` (ElevenLabs, voz clonada `sC35eLb8Bf6WSebuN8Rl`, modelo `eleven_v4`, stability 0, similarity 0.75). Sai **só .ogg**, acelerado **1.35x** (ffmpeg atempo), em `OneDrive\Área de Trabalho\audios-placas\AAAA-MM-DD\`. Chave em `placas-nfc/.env` (fora do git). + mesmo parágrafo da plaquinha + "Posso te mandar um vídeo...".
 
 Depois do áudio, sempre fixos: vídeo + foto do produto, e o áudio fixo de cores / "já levo tudo configurado" / preço. Voz clonada na ElevenLabs (feita em 22/10/2026). Plano: caminho semi-automático, fila de 25 por dia, o Luan aperta enviar.
 
