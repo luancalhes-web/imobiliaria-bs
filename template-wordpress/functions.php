@@ -190,17 +190,20 @@ function imob_ajax_buscar() {
     while ($query->have_posts()) {
         $query->the_post();
         $id = get_the_ID();
+        $preco = get_post_meta($id, '_imovel_preco', true);
         $imoveis[] = [
-            'id'        => $id,
-            'titulo'    => get_the_title(),
-            'link'      => get_permalink(),
-            'thumb'     => get_the_post_thumbnail_url($id, 'medium') ?: get_template_directory_uri() . '/assets/images/placeholder.jpg',
-            'preco'     => get_post_meta($id, '_imovel_preco', true),
-            'area'      => get_post_meta($id, '_imovel_quartos', true),
-            'quartos'   => get_post_meta($id, '_imovel_quartos', true),
-            'vagas'     => get_post_meta($id, '_imovel_vagas', true),
-            'cidade'    => wp_get_post_terms($id, 'cidade_imovel', ['fields' => 'names'])[0] ?? '',
-            'tipo'      => wp_get_post_terms($id, 'tipo_imovel', ['fields' => 'names'])[0] ?? '',
+            'id'         => $id,
+            'titulo'     => get_the_title(),
+            'link'       => get_permalink(),
+            'thumb'      => get_the_post_thumbnail_url($id, 'medium') ?: get_template_directory_uri() . '/assets/images/placeholder.jpg',
+            'preco'      => $preco,
+            'preco_fmt'  => $preco ? imob_formata_preco($preco) : '',
+            'finalidade' => get_post_meta($id, '_imovel_finalidade', true) ?: 'venda',
+            'area'       => get_post_meta($id, '_imovel_area', true),
+            'quartos'    => get_post_meta($id, '_imovel_quartos', true),
+            'vagas'      => get_post_meta($id, '_imovel_vagas', true),
+            'cidade'     => wp_get_post_terms($id, 'cidade_imovel', ['fields' => 'names'])[0] ?? '',
+            'tipo'       => wp_get_post_terms($id, 'tipo_imovel', ['fields' => 'names'])[0] ?? '',
         ];
     }
     wp_reset_postdata();

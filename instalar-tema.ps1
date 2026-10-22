@@ -38,7 +38,8 @@ Write-Host "  Tema copiado para: $temaDestino" -ForegroundColor Green
 $imgDir = "$temaDestino\assets\images"
 if (-not (Test-Path $imgDir)) { New-Item -ItemType Directory -Path $imgDir | Out-Null }
 
-# Cria imagem placeholder simples (SVG renomeado para .jpg — WordPress aceita)
+# Cria imagem placeholder simples so se o repositorio nao trouxer uma (SVG renomeado para .jpg — WordPress aceita)
+if (-not (Test-Path "$imgDir\placeholder.jpg")) {
 $placeholder = @"
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
   <rect width="800" height="600" fill="#e2e8f0"/>
@@ -47,6 +48,7 @@ $placeholder = @"
 </svg>
 "@
 $placeholder | Out-File "$imgDir\placeholder.jpg" -Encoding utf8
+}
 
 Write-Host ""
 Write-Host "SUCESSO! Proximo passo:" -ForegroundColor Green
