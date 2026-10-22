@@ -1,4 +1,4 @@
-"""Gera os áudios personalizados com a voz clonada do Luan (ElevenLabs).
+﻿"""Gera os áudios personalizados com a voz clonada do Luan (ElevenLabs).
 
 Uso:
   python gerar_audio.py roteiros.json        # [{"nome": "Quiosque Magela", "texto": "..."}]
@@ -24,7 +24,7 @@ AQUI = Path(__file__).resolve().parent
 
 def carregar_env():
     env = {}
-    for linha in (AQUI / ".env").read_text(encoding="utf-8").splitlines():
+    for linha in (AQUI / ".env").read_text(encoding="utf-8-sig").splitlines():
         linha = linha.strip()
         if linha and not linha.startswith("#") and "=" in linha:
             k, v = linha.split("=", 1)
@@ -70,7 +70,7 @@ def main():
     ap.add_argument("--nome", default="teste")
     a = ap.parse_args()
     env = carregar_env()
-    itens = [{"nome": a.nome, "texto": a.texto}] if a.texto else json.loads(Path(a.arquivo).read_text(encoding="utf-8"))
+    itens = [{"nome": a.nome, "texto": a.texto}] if a.texto else json.loads(Path(a.arquivo).read_text(encoding="utf-8-sig"))
 
     desktop = next((d for d in (Path.home() / "OneDrive" / "Área de Trabalho", Path.home() / "OneDrive" / "Desktop") if d.exists()), Path.home() / "Desktop")
     pasta = desktop / "audios-placas" / datetime.date.today().isoformat()
