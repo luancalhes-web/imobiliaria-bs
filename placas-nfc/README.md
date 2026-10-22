@@ -34,7 +34,17 @@ Ordem da conversa: **oi → áudio → vídeo de prova → esperar reagir → pr
 
 **Áudio (atual), nota 4,7 ou menos:** mesmo começo + "vi que vocês têm [N] avaliações e nota [X] no Google, que dá pra melhorar. O problema é que as pessoas que têm reclamação sempre lembram de fazer a avaliação no Google, e quem sai satisfeito, geralmente não lembra."
 
-**Geração dos áudios:** `placas-nfc/gerar_audio.py` (ElevenLabs, voz clonada `sC35eLb8Bf6WSebuN8Rl`, modelo `eleven_v4`, stability 0, similarity 0.75). Sai **só .ogg**, acelerado **1.35x** (ffmpeg atempo), em `OneDrive\Área de Trabalho\audios-placas\AAAA-MM-DD\`. Chave em `placas-nfc/.env` (fora do git). + mesmo parágrafo da plaquinha + "Posso te mandar um vídeo...".
+**Geração dos áudios:** `placas-nfc/gerar_audio.py` (ElevenLabs, voz clonada `sC35eLb8Bf6WSebuN8Rl`, modelo `eleven_v4`, stability 0, similarity 0.75). Sai **só .ogg**, acelerado **1.35x** (ffmpeg atempo), em `OneDrive\Área de Trabalho\audios-placas\AAAA-MM-DD\`. Chave em `placas-nfc/.env` (fora do git).
+
+**Rotina diária (desde 22/10/2026):** meta de **25 "oi" por dia** (aba **Hoje** do painel).
+- O Luan marca **Respondeu** no painel e diz "gera os áudios".
+- O Claude então:
+  1. Lê no db do artifact (`ArtifactData`, coleção `status`) quem está com `s:"respondeu"` e sem `au`.
+  2. Roda `node placas-nfc/roteiros.js <ids> > placas-nfc/roteiros.json`.
+  3. Roda `python placas-nfc/gerar_audio.py placas-nfc/roteiros.json`.
+  4. Grava `au:"AAAA-MM-DD"` no status de cada comércio.
+- **Fonte do painel:** `placas-nfc/painel.html`, só no PC, fora do git porque **o repo é público**. A cópia viva é o artifact. Para editar, mude esse arquivo e republique na mesma URL.
+- **Comércios adicionados à mão:** ficam no db (`manuais`) e não estão no `painel.html`. Monte o roteiro deles direto. + mesmo parágrafo da plaquinha + "Posso te mandar um vídeo...".
 
 Depois do áudio, sempre fixos: vídeo + foto do produto, e o áudio fixo de cores / "já levo tudo configurado" / preço. Voz clonada na ElevenLabs (feita em 22/10/2026). Plano: caminho semi-automático, fila de 25 por dia, o Luan aperta enviar.
 

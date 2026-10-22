@@ -22,3 +22,7 @@ desktop.ini
 # Secrets
 .env
 *.env.local
+
+# Placas NFC: lista de comércios e áudios ficam só no PC (repo é público)
+placas-nfc/painel.html
+placas-nfc/roteiros*.json
