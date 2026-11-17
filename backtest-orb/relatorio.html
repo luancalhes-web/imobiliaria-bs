@@ -1,0 +1,459 @@
+<title>Backtest ORB com Reteste</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: relatório de mesa de operações, uma coluna, tabelas densas com números tabulares */
+:root { --bg:#f7f8f7; --card:#ffffff; --fg:#141816; --fg2:#525a56; --line:#dfe3e0; --pos:#0f7a3d; --neg:#c23a2b;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#b07a00; --bh:#8a8f8c;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#121514; --card:#1a1e1c; --fg:#eef1ef; --fg2:#a9b1ad; --line:#2c322f; --pos:#3fbf73; --neg:#ec6a5c;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --bh:#7c827f; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#121514; --card:#1a1e1c; --fg:#eef1ef; --fg2:#a9b1ad; --line:#2c322f; --pos:#3fbf73; --neg:#ec6a5c;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --bh:#7c827f; color-scheme:dark }
+body { background:var(--bg); color:var(--fg); font:15px/1.55 var(--sans); }
+main { max-width:1100px; margin:0 auto; padding-block:32px 64px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); display:grid; gap:40px; }
+h1 { font-size:28px; font-weight:600; margin:0 0 6px; text-wrap:balance }
+h2 { font-size:22px; font-weight:600; margin:0 0 12px; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline }
+h2 .sub { font-size:14px; font-weight:400; color:var(--fg2) }
+h3 { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg2); margin:20px 0 8px; font-weight:500 }
+p { max-width:70ch; margin:0 0 10px } .muted { color:var(--fg2) }
+.regras { color:var(--fg2); font-size:14px } .regras li { margin:2px 0 }
+.tw { overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card) }
+table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; font-size:14px }
+th, td { padding:6px 10px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap }
+th:first-child, td:first-child { text-align:left } th { font-weight:500; color:var(--fg2); font-size:13px }
+tbody tr:last-child td { border-bottom:0 } tr.destaque td { font-weight:600 }
+.pos { color:var(--pos) } .neg { color:var(--neg) }
+.duas { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px } .duas > div { min-width:0 }
+figure { margin:0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px }
+.chart { position:relative; height:320px } figcaption { font-size:12px; color:var(--fg2); margin-top:8px }
+nav { display:flex; flex-wrap:wrap; gap:8px } nav a { color:var(--fg); border:1px solid var(--line); padding:4px 10px; border-radius:4px; text-decoration:none; font-size:14px }
+nav a:focus-visible, summary:focus-visible { outline:2px solid var(--s1); outline-offset:2px }
+details { background:var(--card); border:1px solid var(--line); border-radius:6px; margin-bottom:8px }
+summary { cursor:pointer; padding:10px 14px; font-family:var(--mono); font-size:14px }
+pre { margin:0; padding:14px; overflow-x:auto; font:12.5px/1.5 var(--mono); border-top:1px solid var(--line) }
+.aviso { border-left:3px solid var(--s4); padding:8px 14px; background:var(--card); font-size:14px }
+</style>
+<main>
+<header>
+  <h1>Rompimento do 1º candle de 15 min com entrada no reteste</h1>
+  <p class="muted">Candles reais de 15 min do pregão regular (9h30–16h00, Nova York), Twelve Data · 2024-11-18 a 2026-11-16 · custo de 0,05% por trade</p>
+  <nav><a href="#aapl">AAPL</a><a href="#codigo">Código</a></nav>
+</header>
+<section>
+  <h2>Resumo</h2>
+  <div class="tw"><table><thead><tr><th>Ativo</th><th>Versão</th><th>Trades</th><th>Acerto</th><th>Retorno total</th><th>Fator de lucro</th><th>DD máx.</th><th>Comprar e segurar</th></tr></thead><tbody><tr><td>AAPL</td><td>A · alvo 1,5%</td><td>385</td><td>46%</td><td class='neg'>-12,5%</td><td>0,90</td><td class='neg'>-22,2%</td><td class='pos'>+56,7%</td></tr><tr><td>AAPL</td><td>A · alvo 2%</td><td>385</td><td>46%</td><td class='neg'>-8,9%</td><td>0,93</td><td class='neg'>-23,3%</td><td class='pos'>+56,7%</td></tr><tr><td>AAPL</td><td>B · alvo 1,5%</td><td>385</td><td>45%</td><td class='neg'>-17,5%</td><td>0,86</td><td class='neg'>-25,2%</td><td class='pos'>+56,7%</td></tr><tr><td>AAPL</td><td>B · alvo 2%</td><td>385</td><td>45%</td><td class='neg'>-13,7%</td><td>0,89</td><td class='neg'>-26,3%</td><td class='pos'>+56,7%</td></tr></tbody></table></div>
+  <h3>Como foi simulado</h3>
+  <ul class="regras">
+    <li>Range = máxima e mínima do candle 9h30–9h45. Sinal = primeiro candle a partir das 9h45 que fecha acima da máxima (compra) ou abaixo da mínima (venda). Só o primeiro sinal do dia vale.</li>
+    <li>Entrada exatamente na linha rompida, no primeiro candle posterior à confirmação cuja mínima (compra) ou máxima (venda) toca a linha. Sem toque até 16h00, não há trade.</li>
+    <li>Stop A = 1,5% da entrada. Stop B = outra ponta do range (compra: mínima; venda: máxima). Alvo = +1,5% ou +2%. Sem alvo nem stop, sai no fechamento das 16h00.</li>
+    <li>Stop e alvo no mesmo candle: conta o stop. No próprio candle de entrada só o stop é verificado, porque não dá para saber se a máxima/mínima veio antes do toque.</li>
+    <li>Se um candle abre além do stop ou do alvo (gap), a saída é na abertura desse candle.</li>
+    <li>Custo de 0,05% descontado uma vez por trade. Retorno total = composto, com 100% do capital por trade. Acerto = trade com retorno líquido acima de zero.</li>
+    <li>"Chegariam a +2%": entre os trades com alvo de 1,5%, quantos atingiriam +2% no mesmo dia sem tocar o stop antes (equivale ao alvo batido na rodada com alvo de 2%).</li>
+  </ul>
+</section>
+
+<section class="ativo" id="aapl">
+  <h2>AAPL <span class="sub">500 pregões · comprar e segurar +56,7%</span></h2>
+  <figure><div class="chart"><canvas id="c_AAPL" aria-label="Curva de capital AAPL"></canvas></div>
+  <figcaption>Capital inicial = 1,00. Linhas da estratégia são compostas trade a trade (100% do capital por trade); a linha cinza é o fechamento diário do ativo dividido pela abertura do primeiro dia.</figcaption></figure>
+  <h3>Todos os trades</h3><div class='tw'><table><thead><tr><th></th><th>A · alvo 1,5%</th><th>A · alvo 2%</th><th>B · alvo 1,5%</th><th>B · alvo 2%</th></tr></thead><tbody><tr><td>Dias com sinal</td><td>464</td><td>464</td><td>464</td><td>464</td></tr><tr><td>Com reteste (trade)</td><td>385</td><td>385</td><td>385</td><td>385</td></tr><tr><td>Sem reteste</td><td>79</td><td>79</td><td>79</td><td>79</td></tr><tr><td>Trades executados</td><td class=''>385</td><td class=''>385</td><td class=''>385</td><td class=''>385</td></tr><tr><td>Taxa de acerto</td><td class=''>46%</td><td class=''>46%</td><td class=''>45%</td><td class=''>45%</td></tr><tr><td>Bateram o alvo</td><td class=''>11%</td><td class=''>4%</td><td class=''>11%</td><td class=''>5%</td></tr><tr><td>Bateram o stop</td><td class=''>7%</td><td class=''>7%</td><td class=''>21%</td><td class=''>21%</td></tr><tr><td>Fecharam às 16h</td><td class=''>82%</td><td class=''>89%</td><td class=''>69%</td><td class=''>75%</td></tr><tr><td>Retorno total (composto)</td><td class='neg'>-12,5%</td><td class='neg'>-8,9%</td><td class='neg'>-17,5%</td><td class='neg'>-13,7%</td></tr><tr><td>Soma dos retornos</td><td class='neg'>-12,2%</td><td class='neg'>-8,1%</td><td class='neg'>-18,1%</td><td class='neg'>-13,4%</td></tr><tr><td>Retorno médio por trade</td><td class='neg'>-0,032%</td><td class='neg'>-0,021%</td><td class='neg'>-0,047%</td><td class='neg'>-0,035%</td></tr><tr><td>Payoff (ganho médio / perda média)</td><td class=''>1,05</td><td class=''>1,09</td><td class=''>1,06</td><td class=''>1,11</td></tr><tr><td>Fator de lucro</td><td class=''>0,90</td><td class=''>0,93</td><td class=''>0,86</td><td class=''>0,89</td></tr><tr><td>Drawdown máximo</td><td class='neg'>-22,2%</td><td class='neg'>-23,3%</td><td class='neg'>-25,2%</td><td class='neg'>-26,3%</td></tr><tr><td>Maior sequência de perdas</td><td class=''>8</td><td class=''>8</td><td class=''>8</td><td class=''>8</td></tr><tr class='destaque'><td>Chegariam a +2% sem tocar o stop</td><td>17 (4%)</td><td class='muted'>n/a</td><td>18 (5%)</td><td class='muted'>n/a</td></tr><tr><td>Comprar e segurar</td><td colspan='4' class='pos'>+56,7%</td></tr></tbody></table></div>
+  <div class="duas"><div><h3>Só compras</h3><div class='tw'><table><thead><tr><th></th><th>A · alvo 1,5%</th><th>A · alvo 2%</th><th>B · alvo 1,5%</th><th>B · alvo 2%</th></tr></thead><tbody><tr><td>Trades executados</td><td class=''>207</td><td class=''>207</td><td class=''>207</td><td class=''>207</td></tr><tr><td>Taxa de acerto</td><td class=''>50%</td><td class=''>50%</td><td class=''>49%</td><td class=''>49%</td></tr><tr><td>Bateram o alvo</td><td class=''>13%</td><td class=''>4%</td><td class=''>13%</td><td class=''>5%</td></tr><tr><td>Bateram o stop</td><td class=''>9%</td><td class=''>9%</td><td class=''>22%</td><td class=''>22%</td></tr><tr><td>Fecharam às 16h</td><td class=''>79%</td><td class=''>87%</td><td class=''>65%</td><td class=''>73%</td></tr><tr><td>Retorno total (composto)</td><td class='neg'>-4,1%</td><td class='neg'>-3,0%</td><td class='neg'>-2,9%</td><td class='neg'>-1,3%</td></tr><tr><td>Soma dos retornos</td><td class='neg'>-3,4%</td><td class='neg'>-2,3%</td><td class='neg'>-2,2%</td><td class='neg'>-0,6%</td></tr><tr><td>Retorno médio por trade</td><td class='neg'>-0,017%</td><td class='neg'>-0,011%</td><td class='neg'>-0,011%</td><td class='neg'>-0,003%</td></tr><tr><td>Payoff (ganho médio / perda média)</td><td class=''>0,96</td><td class=''>0,98</td><td class=''>1,01</td><td class=''>1,04</td></tr><tr><td>Fator de lucro</td><td class=''>0,95</td><td class=''>0,97</td><td class=''>0,97</td><td class=''>0,99</td></tr><tr><td>Drawdown máximo</td><td class='neg'>-13,9%</td><td class='neg'>-14,1%</td><td class='neg'>-12,8%</td><td class='neg'>-13,8%</td></tr><tr><td>Maior sequência de perdas</td><td class=''>6</td><td class=''>6</td><td class=''>6</td><td class=''>6</td></tr></tbody></table></div></div><div><h3>Só vendas (short)</h3><div class='tw'><table><thead><tr><th></th><th>A · alvo 1,5%</th><th>A · alvo 2%</th><th>B · alvo 1,5%</th><th>B · alvo 2%</th></tr></thead><tbody><tr><td>Trades executados</td><td class=''>178</td><td class=''>178</td><td class=''>178</td><td class=''>178</td></tr><tr><td>Taxa de acerto</td><td class=''>42%</td><td class=''>42%</td><td class=''>40%</td><td class=''>40%</td></tr><tr><td>Bateram o alvo</td><td class=''>8%</td><td class=''>4%</td><td class=''>8%</td><td class=''>4%</td></tr><tr><td>Bateram o stop</td><td class=''>5%</td><td class=''>5%</td><td class=''>19%</td><td class=''>19%</td></tr><tr><td>Fecharam às 16h</td><td class=''>87%</td><td class=''>90%</td><td class=''>72%</td><td class=''>76%</td></tr><tr><td>Retorno total (composto)</td><td class='neg'>-8,8%</td><td class='neg'>-6,1%</td><td class='neg'>-15,0%</td><td class='neg'>-12,5%</td></tr><tr><td>Soma dos retornos</td><td class='neg'>-8,8%</td><td class='neg'>-5,8%</td><td class='neg'>-15,9%</td><td class='neg'>-12,8%</td></tr><tr><td>Retorno médio por trade</td><td class='neg'>-0,049%</td><td class='neg'>-0,032%</td><td class='neg'>-0,089%</td><td class='neg'>-0,072%</td></tr><tr><td>Payoff (ganho médio / perda média)</td><td class=''>1,15</td><td class=''>1,23</td><td class=''>1,10</td><td class=''>1,18</td></tr><tr><td>Fator de lucro</td><td class=''>0,84</td><td class=''>0,89</td><td class=''>0,73</td><td class=''>0,78</td></tr><tr><td>Drawdown máximo</td><td class='neg'>-16,5%</td><td class='neg'>-15,9%</td><td class='neg'>-17,8%</td><td class='neg'>-17,1%</td></tr><tr><td>Maior sequência de perdas</td><td class=''>9</td><td class=''>9</td><td class=''>11</td><td class=''>11</td></tr></tbody></table></div></div></div>
+</section>
+<section id="codigo"><h2>Código</h2><p class="muted">Python 3 + pandas. Ordem: <code>baixar_dados.py</code> → <code>backtest.py</code> → <code>gerar_relatorio.py</code>.</p><details><summary>baixar_dados.py</summary><pre><code>&quot;&quot;&quot;Baixa candles de 15 min (pregão regular) da Twelve Data para os últimos 2 anos.
+
+Uso: TWELVEDATA_KEY=xxx python baixar_dados.py   (ou sem chave, se o proxy injeta o header)
+Salva em dados/&lt;ATIVO&gt;_15min.csv (horário de Nova York).
+&quot;&quot;&quot;
+import os, sys, time
+from datetime import date, timedelta
+import pandas as pd, requests
+
+ATIVOS = [&quot;NVDA&quot;, &quot;AAPL&quot;, &quot;MSFT&quot;, &quot;NEM&quot;]
+FIM = date(2026, 11, 17)
+INICIO = FIM - timedelta(days=730)
+URL = &quot;https://api.twelvedata.com/time_series&quot;
+PASTA = os.path.join(os.path.dirname(__file__), &quot;dados&quot;)
+KEY = os.environ.get(&quot;TWELVEDATA_KEY&quot;, &quot;&quot;)
+
+
+def baixar(ativo):
+    partes, ini = [], INICIO
+    while ini &lt; FIM:
+        fim = min(ini + timedelta(days=120), FIM)  # ~2.100 candles por chamada (&lt; limite de 5.000)
+        p = dict(symbol=ativo, interval=&quot;15min&quot;, start_date=f&quot;{ini} 00:00:00&quot;,
+                 end_date=f&quot;{fim} 23:59:59&quot;, timezone=&quot;America/New_York&quot;,
+                 outputsize=5000, order=&quot;ASC&quot;)
+        if KEY:
+            p[&quot;apikey&quot;] = KEY
+        for tentativa in range(5):
+            r = requests.get(URL, params=p, timeout=60).json()
+            if r.get(&quot;status&quot;) == &quot;ok&quot;:
+                break
+            if r.get(&quot;code&quot;) == 429:          # limite de 8 chamadas/min do plano gratuito
+                time.sleep(65); continue
+            sys.exit(f&quot;{ativo} {ini}: {r}&quot;)
+        partes.append(pd.DataFrame(r[&quot;values&quot;]))
+        print(ativo, ini, fim, len(r[&quot;values&quot;]), &quot;candles&quot;)
+        ini = fim + timedelta(days=1)
+        time.sleep(8)
+    df = pd.concat(partes).drop_duplicates(&quot;datetime&quot;).sort_values(&quot;datetime&quot;)
+    os.makedirs(PASTA, exist_ok=True)
+    df.to_csv(os.path.join(PASTA, f&quot;{ativo}_15min.csv&quot;), index=False)
+
+
+if __name__ == &quot;__main__&quot;:
+    for a in sys.argv[1:] or ATIVOS:
+        baixar(a)
+</code></pre></details><details><summary>backtest.py</summary><pre><code>&quot;&quot;&quot;Backtest: rompimento do 1º candle de 15 min + entrada no reteste.
+
+Lê dados/&lt;ATIVO&gt;_15min.csv e gera resultados/ (CSV de trades, métricas e JSON para o relatório).
+&quot;&quot;&quot;
+import os, json
+import numpy as np, pandas as pd
+
+ATIVOS = [a for a in [&quot;NVDA&quot;, &quot;AAPL&quot;, &quot;MSFT&quot;, &quot;NEM&quot;] if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), &quot;dados&quot;, f&quot;{a}_15min.csv&quot;))]
+BASE = os.path.dirname(os.path.abspath(__file__))
+CUSTO = 0.0005          # 0,05% por operação (descontado uma vez por trade, ida+volta)
+STOP_FIXO = 0.015       # versão A
+ULTIMO_DIA_EXCLUIDO = pd.Timestamp(&quot;2026-11-17&quot;).date()
+
+
+def carregar(ativo):
+    df = pd.read_csv(os.path.join(BASE, &quot;dados&quot;, f&quot;{ativo}_15min.csv&quot;), parse_dates=[&quot;datetime&quot;])
+    for c in [&quot;open&quot;, &quot;high&quot;, &quot;low&quot;, &quot;close&quot;]:
+        df[c] = df[c].astype(float)
+    df[&quot;data&quot;] = df.datetime.dt.date
+    df = df[df.data &lt; ULTIMO_DIA_EXCLUIDO]                # 17/11/2026 ainda estava em pregão
+    hm = df.datetime.dt.strftime(&quot;%H:%M&quot;)
+    df = df[(hm &gt;= &quot;09:30&quot;) &amp; (hm &lt;= &quot;15:45&quot;)]          # pregão regular: candles 9h30 ... 15h45-16h00
+    # só dias completos com o candle das 9h30
+    ok = df.groupby(&quot;data&quot;).datetime.transform(lambda s: s.dt.strftime(&quot;%H:%M&quot;).eq(&quot;09:30&quot;).any())
+    return df[ok].reset_index(drop=True)
+
+
+def simular_dia(d, alvo, versao):
+    &quot;&quot;&quot;d: candles do dia em ordem. Retorna dict do sinal/trade (ou None se não houve sinal).&quot;&quot;&quot;
+    o, h, l, c = (d[k].to_numpy() for k in [&quot;open&quot;, &quot;high&quot;, &quot;low&quot;, &quot;close&quot;])
+    H, L = h[0], l[0]
+    # 3. confirmação: primeiro candle a partir das 9h45 que FECHA fora do range
+    sinal = None
+    for i in range(1, len(d)):
+        if c[i] &gt; H: sinal = (&quot;compra&quot;, i); break
+        if c[i] &lt; L: sinal = (&quot;venda&quot;, i); break
+    if sinal is None:
+        return None
+    lado, i = sinal
+    res = dict(data=d.datetime.iloc[0].date(), lado=lado, max1=H, min1=L,
+               hora_conf=d.datetime.iloc[i].strftime(&quot;%H:%M&quot;), executado=False)
+    # 4. reteste num candle POSTERIOR ao de confirmação
+    j = next((k for k in range(i + 1, len(d))
+              if (lado == &quot;compra&quot; and l[k] &lt;= H) or (lado == &quot;venda&quot; and h[k] &gt;= L)), None)
+    if j is None:
+        return res
+    entrada = H if lado == &quot;compra&quot; else L
+    if lado == &quot;compra&quot;:
+        stop = entrada * (1 - STOP_FIXO) if versao == &quot;A&quot; else L
+        tgt = entrada * (1 + alvo)
+    else:
+        stop = entrada * (1 + STOP_FIXO) if versao == &quot;A&quot; else H
+        tgt = entrada * (1 - alvo)
+    saida, motivo, hora_saida = None, None, None
+    for k in range(j, len(d)):
+        bate_stop = l[k] &lt;= stop if lado == &quot;compra&quot; else h[k] &gt;= stop
+        # no candle da entrada não se sabe se a máxima (compra) / mínima (venda) veio
+        # antes ou depois do toque, então ali só o stop é verificado (conservador)
+        bate_alvo = k &gt; j and (h[k] &gt;= tgt if lado == &quot;compra&quot; else l[k] &lt;= tgt)
+        if bate_stop:                         # 9. stop e alvo no mesmo candle: stop primeiro
+            # se o candle abriu além do stop (gap), sai na abertura
+            pior = min(o[k], stop) if lado == &quot;compra&quot; else max(o[k], stop)
+            saida, motivo = (pior if k &gt; j else stop), &quot;stop&quot;
+        elif bate_alvo:
+            melhor = max(o[k], tgt) if lado == &quot;compra&quot; else min(o[k], tgt)
+            saida, motivo = melhor, &quot;alvo&quot;
+        if motivo:
+            hora_saida = d.datetime.iloc[k].strftime(&quot;%H:%M&quot;); break
+    if motivo is None:                        # 8. fecha no fechamento do dia (16h00)
+        saida, motivo, hora_saida = c[-1], &quot;fim_do_dia&quot;, &quot;16:00&quot;
+    bruto = saida / entrada - 1 if lado == &quot;compra&quot; else (entrada - saida) / entrada
+    res.update(executado=True, hora_entrada=d.datetime.iloc[j].strftime(&quot;%H:%M&quot;), entrada=entrada,
+               stop=stop, alvo=tgt, saida=saida, motivo=motivo, hora_saida=hora_saida,
+               ret_bruto=bruto, ret=bruto - CUSTO)
+    return res
+
+
+def metricas(t):
+    &quot;&quot;&quot;t: DataFrame de trades executados (coluna ret, em fração).&quot;&quot;&quot;
+    n = len(t)
+    if n == 0:
+        return dict(trades=0)
+    r = t.ret.to_numpy()
+    eq = np.cumprod(1 + r)
+    pico = np.maximum.accumulate(np.concatenate([[1.0], eq]))[1:]
+    dd = (eq / pico - 1).min()
+    seq = mx = 0
+    for x in r:
+        seq = seq + 1 if x &lt;= 0 else 0; mx = max(mx, seq)
+    gan, per = r[r &gt; 0], r[r &lt;= 0]
+    return dict(
+        trades=n, acerto=len(gan) / n,
+        pct_alvo=(t.motivo == &quot;alvo&quot;).mean(), pct_stop=(t.motivo == &quot;stop&quot;).mean(),
+        pct_fim=(t.motivo == &quot;fim_do_dia&quot;).mean(),
+        ret_total=eq[-1] - 1, ret_soma=r.sum(), ret_medio=r.mean(),
+        payoff=(gan.mean() / -per.mean()) if len(gan) and len(per) and per.mean() &lt; 0 else None,
+        fator_lucro=(gan.sum() / -per.sum()) if len(per) and per.sum() &lt; 0 else None,
+        dd_max=min(dd, 0.0), max_perdas_seguidas=mx)
+
+
+def rodar():
+    os.makedirs(os.path.join(BASE, &quot;resultados&quot;), exist_ok=True)
+    saida = dict(ativos={}, periodo=None)
+    todos = []
+    for ativo in ATIVOS:
+        df = carregar(ativo)
+        dias = [g for _, g in df.groupby(&quot;data&quot;)]
+        bh = dias[-1].close.iloc[-1] / dias[0].open.iloc[0] - 1
+        fech = df.groupby(&quot;data&quot;).close.last()
+        saida[&quot;periodo&quot;] = [str(dias[0].data.iloc[0]), str(dias[-1].data.iloc[0])]
+        info = dict(dias_pregao=len(dias), buy_hold=bh,
+                    bh_curva=[[str(k), v / dias[0].open.iloc[0]] for k, v in fech.items()],
+                    cenarios={})
+        trades_por_versao = {}
+        for alvo in (0.015, 0.02):
+            for versao in (&quot;A&quot;, &quot;B&quot;):
+                regs = [x for x in (simular_dia(g, alvo, versao) for g in dias) if x]
+                s = pd.DataFrame(regs)
+                s[&quot;ativo&quot;], s[&quot;alvo_pct&quot;], s[&quot;versao&quot;] = ativo, alvo, versao
+                todos.append(s)
+                ex = s[s.executado]
+                trades_por_versao[(alvo, versao)] = ex
+                cen = dict(dias_sinal=len(s), com_reteste=len(ex), sem_reteste=len(s) - len(ex),
+                           geral=metricas(ex),
+                           compras=metricas(ex[ex.lado == &quot;compra&quot;]),
+                           vendas=metricas(ex[ex.lado == &quot;venda&quot;]),
+                           curva=[[str(d), float(v)] for d, v in zip(ex.data, np.cumprod(1 + ex.ret))])
+                info[&quot;cenarios&quot;][f&quot;{versao}_{alvo*100:g}&quot;] = cen
+        # análise extra: trades do alvo 1,5% que chegariam a +2% antes do stop
+        for versao in (&quot;A&quot;, &quot;B&quot;):
+            t15 = trades_por_versao[(0.015, versao)]
+            t20 = trades_por_versao[(0.02, versao)].set_index(&quot;data&quot;)
+            chegou = (t20.loc[t15.data, &quot;motivo&quot;] == &quot;alvo&quot;).sum()
+            info[&quot;cenarios&quot;][f&quot;{versao}_1.5&quot;][&quot;chegaria_2pct&quot;] = dict(n=int(chegou), pct=chegou / len(t15) if len(t15) else 0)
+        saida[&quot;ativos&quot;][ativo] = info
+    pd.concat(todos).to_csv(os.path.join(BASE, &quot;resultados&quot;, &quot;trades.csv&quot;), index=False)
+    with open(os.path.join(BASE, &quot;resultados&quot;, &quot;resultados.json&quot;), &quot;w&quot;) as f:
+        json.dump(saida, f, default=lambda o: None if o is None else float(o), indent=1)
+    return saida
+
+
+if __name__ == &quot;__main__&quot;:
+    s = rodar()
+    print(&quot;Período:&quot;, s[&quot;periodo&quot;])
+    for a, info in s[&quot;ativos&quot;].items():
+        print(f&quot;\n=== {a}  (buy &amp; hold {info[&#x27;buy_hold&#x27;]:+.1%}, {info[&#x27;dias_pregao&#x27;]} pregões)&quot;)
+        for k, c in info[&quot;cenarios&quot;].items():
+            g = c[&quot;geral&quot;]
+            if not g[&quot;trades&quot;]:
+                print(k, &quot;sem trades&quot;); continue
+            extra = c.get(&quot;chegaria_2pct&quot;)
+            print(f&quot;{k:6} sinais {c[&#x27;dias_sinal&#x27;]:3} reteste {c[&#x27;com_reteste&#x27;]:3} sem {c[&#x27;sem_reteste&#x27;]:3} | &quot;
+                  f&quot;acerto {g[&#x27;acerto&#x27;]:.0%} alvo {g[&#x27;pct_alvo&#x27;]:.0%} stop {g[&#x27;pct_stop&#x27;]:.0%} fim {g[&#x27;pct_fim&#x27;]:.0%} | &quot;
+                  f&quot;total {g[&#x27;ret_total&#x27;]:+.1%} médio {g[&#x27;ret_medio&#x27;]:+.3%} PF {g[&#x27;fator_lucro&#x27;] or 0:.2f} &quot;
+                  f&quot;DD {g[&#x27;dd_max&#x27;]:.1%} perdas seg {g[&#x27;max_perdas_seguidas&#x27;]}&quot;
+                  + (f&quot; | +2%: {extra[&#x27;n&#x27;]} ({extra[&#x27;pct&#x27;]:.0%})&quot; if extra else &quot;&quot;))
+</code></pre></details><details><summary>gerar_relatorio.py</summary><pre><code>&quot;&quot;&quot;Gera relatorio.html a partir de resultados/resultados.json (curvas com Chart.js).&quot;&quot;&quot;
+import json, os, html
+BASE = os.path.dirname(os.path.abspath(__file__))
+R = json.load(open(os.path.join(BASE, &quot;resultados&quot;, &quot;resultados.json&quot;)))
+CEN = [(&quot;A_1.5&quot;, &quot;A · alvo 1,5%&quot;), (&quot;A_2&quot;, &quot;A · alvo 2%&quot;), (&quot;B_1.5&quot;, &quot;B · alvo 1,5%&quot;), (&quot;B_2&quot;, &quot;B · alvo 2%&quot;)]
+
+def pct(x, d=1, sinal=True):
+    if x is None: return &quot;–&quot;
+    s = f&quot;{x*100:+.{d}f}%&quot; if sinal else f&quot;{x*100:.{d}f}%&quot;
+    return s.replace(&quot;.&quot;, &quot;,&quot;)
+def num(x, d=2):
+    return &quot;–&quot; if x is None else f&quot;{x:.{d}f}&quot;.replace(&quot;.&quot;, &quot;,&quot;)
+def cls(x): return &quot;&quot; if x is None else (&quot;pos&quot; if x &gt; 0 else &quot;neg&quot; if x &lt; 0 else &quot;&quot;)
+
+LINHAS = [
+    (&quot;Trades executados&quot;, lambda g, c: str(g[&quot;trades&quot;]), None),
+    (&quot;Taxa de acerto&quot;, lambda g, c: pct(g.get(&quot;acerto&quot;), 0, False), None),
+    (&quot;Bateram o alvo&quot;, lambda g, c: pct(g.get(&quot;pct_alvo&quot;), 0, False), None),
+    (&quot;Bateram o stop&quot;, lambda g, c: pct(g.get(&quot;pct_stop&quot;), 0, False), None),
+    (&quot;Fecharam às 16h&quot;, lambda g, c: pct(g.get(&quot;pct_fim&quot;), 0, False), None),
+    (&quot;Retorno total (composto)&quot;, lambda g, c: pct(g.get(&quot;ret_total&quot;)), &quot;ret_total&quot;),
+    (&quot;Soma dos retornos&quot;, lambda g, c: pct(g.get(&quot;ret_soma&quot;)), &quot;ret_soma&quot;),
+    (&quot;Retorno médio por trade&quot;, lambda g, c: pct(g.get(&quot;ret_medio&quot;), 3), &quot;ret_medio&quot;),
+    (&quot;Payoff (ganho médio / perda média)&quot;, lambda g, c: num(g.get(&quot;payoff&quot;)), None),
+    (&quot;Fator de lucro&quot;, lambda g, c: num(g.get(&quot;fator_lucro&quot;)), None),
+    (&quot;Drawdown máximo&quot;, lambda g, c: pct(g.get(&quot;dd_max&quot;)), &quot;dd_max&quot;),
+    (&quot;Maior sequência de perdas&quot;, lambda g, c: str(g.get(&quot;max_perdas_seguidas&quot;, &quot;–&quot;)), None),
+]
+
+def tabela(info, chave):
+    th = &quot;&quot;.join(f&quot;&lt;th&gt;{n}&lt;/th&gt;&quot; for _, n in CEN)
+    corpo = []
+    if chave == &quot;geral&quot;:
+        for rot, f in [(&quot;Dias com sinal&quot;, &quot;dias_sinal&quot;), (&quot;Com reteste (trade)&quot;, &quot;com_reteste&quot;), (&quot;Sem reteste&quot;, &quot;sem_reteste&quot;)]:
+            corpo.append(f&quot;&lt;tr&gt;&lt;td&gt;{rot}&lt;/td&gt;&quot; + &quot;&quot;.join(f&quot;&lt;td&gt;{info[&#x27;cenarios&#x27;][k][f]}&lt;/td&gt;&quot; for k, _ in CEN) + &quot;&lt;/tr&gt;&quot;)
+    for rot, fn, cor in LINHAS:
+        tds = []
+        for k, _ in CEN:
+            g = info[&quot;cenarios&quot;][k][chave]
+            if not g.get(&quot;trades&quot;): tds.append(&quot;&lt;td&gt;–&lt;/td&gt;&quot;); continue
+            tds.append(f&quot;&lt;td class=&#x27;{cls(g.get(cor)) if cor else &#x27;&#x27;}&#x27;&gt;{fn(g, info[&#x27;cenarios&#x27;][k])}&lt;/td&gt;&quot;)
+        corpo.append(f&quot;&lt;tr&gt;&lt;td&gt;{rot}&lt;/td&gt;{&#x27;&#x27;.join(tds)}&lt;/tr&gt;&quot;)
+    if chave == &quot;geral&quot;:
+        tds = []
+        for k, _ in CEN:
+            e = info[&quot;cenarios&quot;][k].get(&quot;chegaria_2pct&quot;)
+            tds.append(f&quot;&lt;td&gt;{e[&#x27;n&#x27;]} ({pct(e[&#x27;pct&#x27;],0,False)})&lt;/td&gt;&quot; if e else &quot;&lt;td class=&#x27;muted&#x27;&gt;n/a&lt;/td&gt;&quot;)
+        corpo.append(f&quot;&lt;tr class=&#x27;destaque&#x27;&gt;&lt;td&gt;Chegariam a +2% sem tocar o stop&lt;/td&gt;{&#x27;&#x27;.join(tds)}&lt;/tr&gt;&quot;)
+        corpo.append(f&quot;&lt;tr&gt;&lt;td&gt;Comprar e segurar&lt;/td&gt;&lt;td colspan=&#x27;4&#x27; class=&#x27;{cls(info[&#x27;buy_hold&#x27;])}&#x27;&gt;{pct(info[&#x27;buy_hold&#x27;])}&lt;/td&gt;&lt;/tr&gt;&quot;)
+    return f&quot;&lt;div class=&#x27;tw&#x27;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;{th}&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{&#x27;&#x27;.join(corpo)}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&quot;
+
+def curvas(info):
+    dias = [d for d, _ in info[&quot;bh_curva&quot;]]
+    out = {&quot;labels&quot;: dias, &quot;bh&quot;: [round(v, 4) for _, v in info[&quot;bh_curva&quot;]]}
+    for k, _ in CEN:
+        m = dict(info[&quot;cenarios&quot;][k][&quot;curva&quot;]); v = 1.0; s = []
+        for d in dias:
+            v = m.get(d, v); s.append(round(v, 4))
+        out[k] = s
+    return out
+
+secoes, dados_js, resumo = [], {}, []
+for ativo, info in R[&quot;ativos&quot;].items():
+    dados_js[ativo] = curvas(info)
+    for k, n in CEN:
+        g = info[&quot;cenarios&quot;][k][&quot;geral&quot;]
+        resumo.append(f&quot;&lt;tr&gt;&lt;td&gt;{ativo}&lt;/td&gt;&lt;td&gt;{n}&lt;/td&gt;&lt;td&gt;{g[&#x27;trades&#x27;]}&lt;/td&gt;&lt;td&gt;{pct(g[&#x27;acerto&#x27;],0,False)}&lt;/td&gt;&quot;
+                      f&quot;&lt;td class=&#x27;{cls(g[&#x27;ret_total&#x27;])}&#x27;&gt;{pct(g[&#x27;ret_total&#x27;])}&lt;/td&gt;&lt;td&gt;{num(g[&#x27;fator_lucro&#x27;])}&lt;/td&gt;&quot;
+                      f&quot;&lt;td class=&#x27;neg&#x27;&gt;{pct(g[&#x27;dd_max&#x27;])}&lt;/td&gt;&lt;td class=&#x27;{cls(info[&#x27;buy_hold&#x27;])}&#x27;&gt;{pct(info[&#x27;buy_hold&#x27;])}&lt;/td&gt;&lt;/tr&gt;&quot;)
+    secoes.append(f&quot;&quot;&quot;
+&lt;section class=&quot;ativo&quot; id=&quot;{ativo.lower()}&quot;&gt;
+  &lt;h2&gt;{ativo} &lt;span class=&quot;sub&quot;&gt;{info[&#x27;dias_pregao&#x27;]} pregões · comprar e segurar {pct(info[&#x27;buy_hold&#x27;])}&lt;/span&gt;&lt;/h2&gt;
+  &lt;figure&gt;&lt;div class=&quot;chart&quot;&gt;&lt;canvas id=&quot;c_{ativo}&quot; aria-label=&quot;Curva de capital {ativo}&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+  &lt;figcaption&gt;Capital inicial = 1,00. Linhas da estratégia são compostas trade a trade (100% do capital por trade); a linha cinza é o fechamento diário do ativo dividido pela abertura do primeiro dia.&lt;/figcaption&gt;&lt;/figure&gt;
+  &lt;h3&gt;Todos os trades&lt;/h3&gt;{tabela(info, &#x27;geral&#x27;)}
+  &lt;div class=&quot;duas&quot;&gt;&lt;div&gt;&lt;h3&gt;Só compras&lt;/h3&gt;{tabela(info, &#x27;compras&#x27;)}&lt;/div&gt;&lt;div&gt;&lt;h3&gt;Só vendas (short)&lt;/h3&gt;{tabela(info, &#x27;vendas&#x27;)}&lt;/div&gt;&lt;/div&gt;
+&lt;/section&gt;&quot;&quot;&quot;)
+
+codigo = &quot;&quot;.join(f&quot;&lt;details&gt;&lt;summary&gt;{n}&lt;/summary&gt;&lt;pre&gt;&lt;code&gt;{html.escape(open(os.path.join(BASE, n)).read())}&lt;/code&gt;&lt;/pre&gt;&lt;/details&gt;&quot;
+                 for n in [&quot;baixar_dados.py&quot;, &quot;backtest.py&quot;, &quot;gerar_relatorio.py&quot;])
+ini, fim = R[&quot;periodo&quot;]
+
+page = f&quot;&quot;&quot;&lt;title&gt;Backtest ORB com Reteste&lt;/title&gt;
+&lt;meta name=&quot;claude:viewport-fit-sides&quot; content=&quot;cover&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap&quot;&gt;
+&lt;style&gt;
+/* Layout: relatório de mesa de operações, uma coluna, tabelas densas com números tabulares */
+:root {{ --bg:#f7f8f7; --card:#ffffff; --fg:#141816; --fg2:#525a56; --line:#dfe3e0; --pos:#0f7a3d; --neg:#c23a2b;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#b07a00; --bh:#8a8f8c;
+  --sans:&quot;IBM Plex Sans&quot;,system-ui,sans-serif; --mono:&quot;IBM Plex Mono&quot;,ui-monospace,monospace; }}
+@media (prefers-color-scheme: dark) {{ :root:not([data-theme=&quot;light&quot;]) {{ --bg:#121514; --card:#1a1e1c; --fg:#eef1ef; --fg2:#a9b1ad; --line:#2c322f; --pos:#3fbf73; --neg:#ec6a5c;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --bh:#7c827f; color-scheme:dark }} }}
+:root[data-theme=&quot;dark&quot;] {{ --bg:#121514; --card:#1a1e1c; --fg:#eef1ef; --fg2:#a9b1ad; --line:#2c322f; --pos:#3fbf73; --neg:#ec6a5c;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --bh:#7c827f; color-scheme:dark }}
+body {{ background:var(--bg); color:var(--fg); font:15px/1.55 var(--sans); }}
+main {{ max-width:1100px; margin:0 auto; padding-block:32px 64px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); display:grid; gap:40px; }}
+h1 {{ font-size:28px; font-weight:600; margin:0 0 6px; text-wrap:balance }}
+h2 {{ font-size:22px; font-weight:600; margin:0 0 12px; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline }}
+h2 .sub {{ font-size:14px; font-weight:400; color:var(--fg2) }}
+h3 {{ font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg2); margin:20px 0 8px; font-weight:500 }}
+p {{ max-width:70ch; margin:0 0 10px }} .muted {{ color:var(--fg2) }}
+.regras {{ color:var(--fg2); font-size:14px }} .regras li {{ margin:2px 0 }}
+.tw {{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card) }}
+table {{ border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; font-size:14px }}
+th, td {{ padding:6px 10px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap }}
+th:first-child, td:first-child {{ text-align:left }} th {{ font-weight:500; color:var(--fg2); font-size:13px }}
+tbody tr:last-child td {{ border-bottom:0 }} tr.destaque td {{ font-weight:600 }}
+.pos {{ color:var(--pos) }} .neg {{ color:var(--neg) }}
+.duas {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px }} .duas &gt; div {{ min-width:0 }}
+figure {{ margin:0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px }}
+.chart {{ position:relative; height:320px }} figcaption {{ font-size:12px; color:var(--fg2); margin-top:8px }}
+nav {{ display:flex; flex-wrap:wrap; gap:8px }} nav a {{ color:var(--fg); border:1px solid var(--line); padding:4px 10px; border-radius:4px; text-decoration:none; font-size:14px }}
+nav a:focus-visible, summary:focus-visible {{ outline:2px solid var(--s1); outline-offset:2px }}
+details {{ background:var(--card); border:1px solid var(--line); border-radius:6px; margin-bottom:8px }}
+summary {{ cursor:pointer; padding:10px 14px; font-family:var(--mono); font-size:14px }}
+pre {{ margin:0; padding:14px; overflow-x:auto; font:12.5px/1.5 var(--mono); border-top:1px solid var(--line) }}
+.aviso {{ border-left:3px solid var(--s4); padding:8px 14px; background:var(--card); font-size:14px }}
+&lt;/style&gt;
+&lt;main&gt;
+&lt;header&gt;
+  &lt;h1&gt;Rompimento do 1º candle de 15 min com entrada no reteste&lt;/h1&gt;
+  &lt;p class=&quot;muted&quot;&gt;Candles reais de 15 min do pregão regular (9h30–16h00, Nova York), Twelve Data · {ini} a {fim} · custo de 0,05% por trade&lt;/p&gt;
+  &lt;nav&gt;{&#x27;&#x27;.join(f&#x27;&lt;a href=&quot;#{a.lower()}&quot;&gt;{a}&lt;/a&gt;&#x27; for a in R[&#x27;ativos&#x27;])}&lt;a href=&quot;#codigo&quot;&gt;Código&lt;/a&gt;&lt;/nav&gt;
+&lt;/header&gt;
+&lt;section&gt;
+  &lt;h2&gt;Resumo&lt;/h2&gt;
+  &lt;div class=&quot;tw&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Ativo&lt;/th&gt;&lt;th&gt;Versão&lt;/th&gt;&lt;th&gt;Trades&lt;/th&gt;&lt;th&gt;Acerto&lt;/th&gt;&lt;th&gt;Retorno total&lt;/th&gt;&lt;th&gt;Fator de lucro&lt;/th&gt;&lt;th&gt;DD máx.&lt;/th&gt;&lt;th&gt;Comprar e segurar&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{&#x27;&#x27;.join(resumo)}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+  &lt;h3&gt;Como foi simulado&lt;/h3&gt;
+  &lt;ul class=&quot;regras&quot;&gt;
+    &lt;li&gt;Range = máxima e mínima do candle 9h30–9h45. Sinal = primeiro candle a partir das 9h45 que fecha acima da máxima (compra) ou abaixo da mínima (venda). Só o primeiro sinal do dia vale.&lt;/li&gt;
+    &lt;li&gt;Entrada exatamente na linha rompida, no primeiro candle posterior à confirmação cuja mínima (compra) ou máxima (venda) toca a linha. Sem toque até 16h00, não há trade.&lt;/li&gt;
+    &lt;li&gt;Stop A = 1,5% da entrada. Stop B = outra ponta do range (compra: mínima; venda: máxima). Alvo = +1,5% ou +2%. Sem alvo nem stop, sai no fechamento das 16h00.&lt;/li&gt;
+    &lt;li&gt;Stop e alvo no mesmo candle: conta o stop. No próprio candle de entrada só o stop é verificado, porque não dá para saber se a máxima/mínima veio antes do toque.&lt;/li&gt;
+    &lt;li&gt;Se um candle abre além do stop ou do alvo (gap), a saída é na abertura desse candle.&lt;/li&gt;
+    &lt;li&gt;Custo de 0,05% descontado uma vez por trade. Retorno total = composto, com 100% do capital por trade. Acerto = trade com retorno líquido acima de zero.&lt;/li&gt;
+    &lt;li&gt;&quot;Chegariam a +2%&quot;: entre os trades com alvo de 1,5%, quantos atingiriam +2% no mesmo dia sem tocar o stop antes (equivale ao alvo batido na rodada com alvo de 2%).&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;
+{&#x27;&#x27;.join(secoes)}
+&lt;section id=&quot;codigo&quot;&gt;&lt;h2&gt;Código&lt;/h2&gt;&lt;p class=&quot;muted&quot;&gt;Python 3 + pandas. Ordem: &lt;code&gt;baixar_dados.py&lt;/code&gt; → &lt;code&gt;backtest.py&lt;/code&gt; → &lt;code&gt;gerar_relatorio.py&lt;/code&gt;.&lt;/p&gt;{codigo}&lt;/section&gt;
+&lt;/main&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+const D = {json.dumps(dados_js)};
+const SER = [[&quot;A_1.5&quot;,&quot;A · alvo 1,5%&quot;,&quot;--s1&quot;,[]],[&quot;A_2&quot;,&quot;A · alvo 2%&quot;,&quot;--s2&quot;,[6,3]],[&quot;B_1.5&quot;,&quot;B · alvo 1,5%&quot;,&quot;--s3&quot;,[]],[&quot;B_2&quot;,&quot;B · alvo 2%&quot;,&quot;--s4&quot;,[6,3]],[&quot;bh&quot;,&quot;Comprar e segurar&quot;,&quot;--bh&quot;,[2,2]]];
+const charts = [];
+function cor(v) {{ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }}
+function desenhar() {{
+  charts.forEach(c =&gt; c.destroy()); charts.length = 0;
+  const fg2 = cor(&quot;--fg2&quot;), line = cor(&quot;--line&quot;);
+  for (const [ativo, d] of Object.entries(D)) {{
+    const el = document.getElementById(&quot;c_&quot; + ativo); if (!el) continue;
+    charts.push(new Chart(el, {{ type: &quot;line&quot;,
+      data: {{ labels: d.labels, datasets: SER.map(([k, n, c, dash]) =&gt; ({{ label: n, data: d[k], borderColor: cor(c), backgroundColor: cor(c),
+        borderWidth: 2, borderDash: dash, pointRadius: 0, pointHoverRadius: 4, tension: 0 }})) }},
+      options: {{ responsive: true, maintainAspectRatio: false, animation: false, interaction: {{ mode: &quot;index&quot;, intersect: false }},
+        scales: {{ x: {{ ticks: {{ color: fg2, maxTicksLimit: 8, maxRotation: 0 }}, grid: {{ display: false }} }},
+                  y: {{ ticks: {{ color: fg2, callback: v =&gt; v.toFixed(2).replace(&quot;.&quot;, &quot;,&quot;) }}, grid: {{ color: line }} }} }},
+        plugins: {{ legend: {{ labels: {{ color: fg2, boxWidth: 14, boxHeight: 2 }} }},
+          tooltip: {{ callbacks: {{ label: c =&gt; c.dataset.label + &quot;: &quot; + c.parsed.y.toFixed(3).replace(&quot;.&quot;, &quot;,&quot;) }} }} }} }} }}));
+  }}
+}}
+if (window.Chart) {{ desenhar(); matchMedia(&quot;(prefers-color-scheme: dark)&quot;).addEventListener(&quot;change&quot;, desenhar);
+  new MutationObserver(desenhar).observe(document.documentElement, {{ attributes: true, attributeFilter: [&quot;data-theme&quot;] }}); }}
+&lt;/script&gt;
+&quot;&quot;&quot;
+open(os.path.join(BASE, &quot;relatorio.html&quot;), &quot;w&quot;).write(page)
+print(&quot;relatorio.html gerado&quot;)
+</code></pre></details></section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const D = {"AAPL": {"labels": ["2024-11-18", "2024-11-19", "2024-11-20", "2024-11-21", "2024-11-22", "2024-11-25", "2024-11-26", "2024-11-27", "2024-11-29", "2024-12-02", "2024-12-03", "2024-12-04", "2024-12-05", "2024-12-06", "2024-12-09", "2024-12-10", "2024-12-11", "2024-12-12", "2024-12-13", "2024-12-16", "2024-12-17", "2024-12-18", "2024-12-19", "2024-12-20", "2024-12-23", "2024-12-24", "2024-12-26", "2024-12-27", "2024-12-30", "2024-12-31", "2025-01-02", "2025-01-03", "2025-01-06", "2025-01-07", "2025-01-08", "2025-01-10", "2025-01-13", "2025-01-14", "2025-01-15", "2025-01-16", "2025-01-17", "2025-01-21", "2025-01-22", "2025-01-23", "2025-01-24", "2025-01-27", "2025-01-28", "2025-01-29", "2025-01-30", "2025-01-31", "2025-02-03", "2025-02-04", "2025-02-05", "2025-02-06", "2025-02-07", "2025-02-10", "2025-02-11", "2025-02-12", "2025-02-13", "2025-02-14", "2025-02-18", "2025-02-19", "2025-02-20", "2025-02-21", "2025-02-24", "2025-02-25", "2025-02-26", "2025-02-27", "2025-02-28", "2025-03-03", "2025-03-04", "2025-03-05", "2025-03-06", "2025-03-07", "2025-03-10", "2025-03-11", "2025-03-12", "2025-03-13", "2025-03-14", "2025-03-17", "2025-03-18", "2025-03-19", "2025-03-20", "2025-03-21", "2025-03-24", "2025-03-25", "2025-03-26", "2025-03-27", "2025-03-28", "2025-03-31", "2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04", "2025-04-07", "2025-04-08", "2025-04-09", "2025-04-10", "2025-04-11", "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25", "2025-04-28", "2025-04-29", "2025-04-30", "2025-05-01", "2025-05-02", "2025-05-05", "2025-05-06", "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-12", "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-06-02", "2025-06-03", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", "2025-06-16", "2025-06-17", "2025-06-18", "2025-06-20", "2025-06-23", "2025-06-24", "2025-06-25", "2025-06-26", "2025-06-27", "2025-06-30", "2025-07-01", "2025-07-02", "2025-07-03", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16"], "bh": [1.0124, 1.0139, 1.0169, 1.0147, 1.0202, 1.0341, 1.0439, 1.0435, 1.0539, 1.0639, 1.0774, 1.0791, 1.0794, 1.0784, 1.096, 1.1004, 1.0943, 1.101, 1.1018, 1.1147, 1.1256, 1.1006, 1.1095, 1.1305, 1.1337, 1.1465, 1.1505, 1.1355, 1.1195, 1.1118, 1.0827, 1.0804, 1.0879, 1.0754, 1.0778, 1.0521, 1.0409, 1.0359, 1.0562, 1.0135, 1.0213, 0.9887, 0.9937, 0.9931, 0.9893, 1.021, 1.0579, 1.0628, 1.0549, 1.0473, 1.0123, 1.0337, 1.0322, 1.0356, 1.0111, 1.0108, 1.0336, 1.0519, 1.0725, 1.086, 1.0856, 1.0874, 1.0917, 1.0905, 1.0978, 1.097, 1.0671, 1.0541, 1.0739, 1.0575, 1.0483, 1.0469, 1.0449, 1.0616, 1.0104, 0.9802, 0.9633, 0.9312, 0.9475, 0.9511, 0.9449, 0.956, 0.9509, 0.9696, 0.9788, 0.9936, 0.9831, 0.9944, 0.9675, 0.9858, 0.9909, 0.9937, 0.9017, 0.8365, 0.8063, 0.7672, 0.883, 0.8456, 0.8793, 0.8996, 0.8976, 0.8628, 0.8742, 0.8574, 0.8866, 0.9075, 0.9245, 0.9291, 0.9329, 0.938, 0.9436, 0.9451, 0.9116, 0.8826, 0.881, 0.8714, 0.8766, 0.8816, 0.9362, 0.9451, 0.9432, 0.939, 0.9378, 0.927, 0.9186, 0.8972, 0.8942, 0.8674, 0.889, 0.89, 0.8879, 0.891, 0.8961, 0.9029, 0.9009, 0.8905, 0.9056, 0.8945, 0.9003, 0.883, 0.8845, 0.8723, 0.8809, 0.8687, 0.8714, 0.8923, 0.895, 0.8894, 0.8952, 0.8923, 0.893, 0.9108, 0.923, 0.9432, 0.9478, 0.9322, 0.9327, 0.9374, 0.9433, 0.9373, 0.926, 0.9281, 0.9335, 0.9328, 0.9379, 0.9438, 0.952, 0.9516, 0.9492, 0.9501, 0.9504, 0.9385, 0.9282, 0.9219, 0.8982, 0.9029, 0.9011, 0.9469, 0.9775, 1.0185, 1.0089, 1.0198, 1.0361, 1.0339, 1.0286, 1.0252, 1.0237, 1.0034, 0.9987, 1.0113, 1.0087, 1.0182, 1.0233, 1.0324, 1.0314, 1.02, 1.059, 1.0644, 1.0643, 1.0565, 1.0406, 1.007, 1.0214, 1.0393, 1.0513, 1.0575, 1.0611, 1.0562, 1.0892, 1.1372, 1.1302, 1.1201, 1.1409, 1.1344, 1.1294, 1.1304, 1.1341, 1.1418, 1.1457, 1.1397, 1.1389, 1.1458, 1.128, 1.0893, 1.0994, 1.1006, 1.1076, 1.0987, 1.1203, 1.1644, 1.1671, 1.1476, 1.1527, 1.1667, 1.1933, 1.1946, 1.1977, 1.2047, 1.2, 1.1948, 1.1999, 1.1994, 1.1973, 1.1919, 1.1961, 1.2225, 1.2143, 1.2124, 1.2103, 1.1877, 1.1879, 1.1925, 1.1829, 1.2056, 1.2255, 1.2298, 1.2321, 1.2383, 1.2581, 1.271, 1.2618, 1.2462, 1.238, 1.2343, 1.231, 1.2377, 1.2347, 1.2361, 1.2172, 1.2188, 1.2072, 1.2085, 1.2152, 1.2026, 1.2089, 1.216, 1.2134, 1.2158, 1.2122, 1.2071, 1.2033, 1.1868, 1.1644, 1.1561, 1.1504, 1.1516, 1.1555, 1.1592, 1.1543, 1.1471, 1.1345, 1.0954, 1.0996, 1.1028, 1.1011, 1.1342, 1.1468, 1.1387, 1.1464, 1.1522, 1.1988, 1.1965, 1.2276, 1.2252, 1.2348, 1.2191, 1.2158, 1.2235, 1.1616, 1.136, 1.1712, 1.1737, 1.1568, 1.1749, 1.1829, 1.2086, 1.2175, 1.2122, 1.173, 1.175, 1.1709, 1.1654, 1.1557, 1.1432, 1.154, 1.1577, 1.1581, 1.1357, 1.1106, 1.1225, 1.1289, 1.1097, 1.1053, 1.1021, 1.1165, 1.1179, 1.1215, 1.1229, 1.104, 1.0948, 1.127, 1.1354, 1.1363, 1.1496, 1.1256, 1.1498, 1.1563, 1.1562, 1.151, 1.1494, 1.1828, 1.1694, 1.1998, 1.2119, 1.1821, 1.2131, 1.2142, 1.2036, 1.1886, 1.2023, 1.1998, 1.205, 1.244, 1.2293, 1.2619, 1.2768, 1.2765, 1.3023, 1.2999, 1.3094, 1.3272, 1.324, 1.3331, 1.3228, 1.3276, 1.3422, 1.3548, 1.3716, 1.3694, 1.3807, 1.3877, 1.3857, 1.3602, 1.3996, 1.3782, 1.3817, 1.365, 1.3391, 1.2893, 1.2944, 1.3115, 1.2925, 1.3163, 1.3288, 1.3139, 1.3228, 1.3179, 1.3067, 1.3022, 1.2214, 1.2487, 1.2506, 1.2837, 1.3066, 1.3687, 1.389, 1.3795, 1.391, 1.404, 1.4002, 1.4095, 1.3984, 1.4546, 1.4799, 1.482, 1.4507, 1.4547, 1.447, 1.4281, 1.479, 1.4961, 1.5105, 1.5012, 1.4825, 1.3722, 1.3467, 1.3738, 1.3806, 1.3874, 1.3912, 1.3685, 1.3539, 1.342, 1.3558, 1.3586, 1.3574, 1.3774, 1.4071, 1.3825, 1.374, 1.3781, 1.3758, 1.3921, 1.3969, 1.4194, 1.4087, 1.4438, 1.4431, 1.4574, 1.4209, 1.4048, 1.4006, 1.4502, 1.4753, 1.4789, 1.4713, 1.4765, 1.4968, 1.4902, 1.5048, 1.5086, 1.4962, 1.4914, 1.5144, 1.5025, 1.4635, 1.4787, 1.4675, 1.4822, 1.4793, 1.4816, 1.4948, 1.5116, 1.4948, 1.5145, 1.5157, 1.5233, 1.5183, 1.5252, 1.523, 1.5086, 1.5278, 1.5467, 1.5441, 1.5274, 1.5412, 1.5269, 1.5495, 1.531, 1.5058, 1.4731, 1.5525, 1.5289, 1.5203, 1.5563, 1.5481, 1.5799, 1.5759, 1.5826, 1.5667], "A_1.5": [1.0, 0.9986, 0.9932, 0.9856, 0.9835, 0.9768, 0.9767, 0.9767, 0.9832, 0.9827, 0.9827, 0.9802, 0.9782, 0.9766, 0.9766, 0.9767, 0.9643, 0.9653, 0.9631, 0.9666, 0.9685, 0.9535, 0.9535, 0.9535, 0.9477, 0.9518, 0.9518, 0.9518, 0.9468, 0.9519, 0.9552, 0.9552, 0.9501, 0.9354, 0.9377, 0.9377, 0.9405, 0.944, 0.9448, 0.9448, 0.9432, 0.9348, 0.9372, 0.9403, 0.9403, 0.9539, 0.9539, 0.9677, 0.9707, 0.9848, 0.9991, 0.9991, 1.007, 1.007, 1.007, 0.9941, 0.9941, 0.9941, 0.9941, 0.997, 0.9899, 0.9863, 0.9863, 0.9858, 0.9826, 0.9823, 0.9823, 0.9882, 1.0025, 1.0171, 1.0214, 1.0107, 1.0053, 1.0062, 1.0062, 1.0208, 1.0356, 1.0506, 1.0382, 1.0278, 1.0301, 1.0284, 1.0253, 1.0402, 1.0402, 1.0455, 1.0539, 1.0539, 1.0375, 1.0526, 1.0609, 1.0648, 1.0614, 1.0449, 1.0287, 1.0128, 1.0275, 1.0424, 1.0575, 1.0728, 1.067, 1.0825, 1.0801, 1.0756, 1.0756, 1.0589, 1.0743, 1.0782, 1.0717, 1.0751, 1.0751, 1.0762, 1.0698, 1.0789, 1.0704, 1.0758, 1.0591, 1.0578, 1.0578, 1.0635, 1.0602, 1.0573, 1.0558, 1.0578, 1.0552, 1.0388, 1.038, 1.0282, 1.033, 1.0329, 1.0329, 1.0169, 1.0126, 1.0158, 1.0056, 1.0156, 1.0103, 0.9947, 0.9922, 0.9922, 0.9922, 0.9958, 0.998, 0.986, 0.986, 0.9707, 0.9624, 0.9674, 0.965, 0.965, 0.9653, 0.9504, 0.9475, 0.9496, 0.9496, 0.9634, 0.961, 0.9524, 0.9577, 0.9574, 0.9556, 0.9455, 0.9406, 0.9401, 0.9406, 0.9406, 0.9417, 0.9366, 0.9371, 0.9359, 0.9334, 0.9334, 0.9392, 0.9305, 0.9305, 0.916, 0.9096, 0.9096, 0.8955, 0.8955, 0.8891, 0.8875, 0.8915, 0.8912, 0.8912, 0.8926, 0.8863, 0.8913, 0.89, 0.8926, 0.8886, 0.8886, 0.8888, 0.8946, 0.8925, 0.892, 0.892, 0.8929, 0.8889, 0.8915, 0.8986, 0.8986, 0.9044, 0.9176, 0.9128, 0.9116, 0.9105, 0.9108, 0.924, 0.924, 0.924, 0.9248, 0.9382, 0.9356, 0.935, 0.9323, 0.9323, 0.9312, 0.9301, 0.9259, 0.9247, 0.9255, 0.9304, 0.9304, 0.9228, 0.925, 0.9201, 0.9161, 0.9294, 0.9429, 0.9429, 0.9429, 0.9402, 0.9402, 0.9402, 0.9402, 0.9361, 0.9333, 0.9333, 0.9265, 0.9284, 0.9313, 0.9313, 0.9237, 0.9094, 0.9159, 0.9095, 0.9109, 0.9109, 0.9029, 0.9029, 0.8994, 0.8855, 0.8918, 0.8916, 0.8916, 0.8861, 0.8861, 0.8989, 0.9033, 0.9084, 0.9084, 0.9095, 0.9074, 0.9091, 0.91, 0.8995, 0.8995, 0.901, 0.9023, 0.9116, 0.9116, 0.9041, 0.9087, 0.9115, 0.9081, 0.9081, 0.9081, 0.9059, 0.9069, 0.8929, 0.8944, 0.8967, 0.8993, 0.9033, 0.8971, 0.8964, 0.8964, 0.8935, 0.8935, 0.8935, 0.8935, 0.8797, 0.8707, 0.8707, 0.8707, 0.8619, 0.8594, 0.8524, 0.8647, 0.8773, 0.874, 0.8717, 0.8582, 0.8521, 0.8484, 0.8465, 0.8421, 0.8421, 0.8514, 0.8637, 0.8613, 0.8668, 0.8793, 0.8773, 0.8703, 0.8748, 0.875, 0.8877, 0.8916, 0.8827, 0.8827, 0.8785, 0.8785, 0.8913, 0.8936, 0.8911, 0.8911, 0.8911, 0.8923, 0.8912, 0.8959, 0.8891, 0.8867, 0.886, 0.8844, 0.8872, 0.8882, 0.9011, 0.9024, 0.8884, 0.8884, 0.8919, 0.8938, 0.8815, 0.8823, 0.8736, 0.8723, 0.8661, 0.8665, 0.8665, 0.8623, 0.8631, 0.8617, 0.8742, 0.8742, 0.8728, 0.8692, 0.8682, 0.8682, 0.8716, 0.8842, 0.8725, 0.87, 0.8826, 0.8826, 0.8689, 0.8673, 0.867, 0.8696, 0.8696, 0.8696, 0.8696, 0.8675, 0.8675, 0.868, 0.8751, 0.8745, 0.8653, 0.8632, 0.8671, 0.8651, 0.8651, 0.8776, 0.8776, 0.8751, 0.8878, 0.874, 0.874, 0.8751, 0.8615, 0.8635, 0.8648, 0.8648, 0.8648, 0.8648, 0.8664, 0.8716, 0.8618, 0.8701, 0.8827, 0.8827, 0.8955, 0.8977, 0.8977, 0.8977, 0.8977, 0.9008, 0.9123, 0.9056, 0.9024, 0.8998, 0.8998, 0.9128, 0.9056, 0.9056, 0.9056, 0.9047, 0.9019, 0.9019, 0.901, 0.894, 0.8828, 0.8828, 0.8828, 0.8878, 0.9007, 0.9047, 0.9073, 0.9053, 0.9075, 0.911, 0.9104, 0.9117, 0.9101, 0.9047, 0.9047, 0.9047, 0.9178, 0.9115, 0.9052, 0.906, 0.9108, 0.9108, 0.9108, 0.9098, 0.9098, 0.9067, 0.9083, 0.9083, 0.9059, 0.8919, 0.901, 0.8951, 0.8899, 0.8899, 0.8877, 0.874, 0.873, 0.873, 0.8727, 0.8724, 0.8688, 0.8793, 0.8835, 0.8896, 0.889, 0.8829, 0.8834, 0.8834, 0.878, 0.878, 0.8847, 0.8847, 0.8847, 0.8847, 0.8858, 0.8943, 0.8901, 0.8851, 0.8851, 0.8851, 0.8751, 0.8751, 0.869, 0.869, 0.871, 0.871, 0.8575, 0.8602, 0.8602, 0.8576, 0.8576, 0.8589, 0.8589, 0.8621, 0.8674, 0.8695, 0.8726, 0.8746], "A_2": [1.0, 0.9986, 0.9932, 0.9856, 0.9835, 0.9768, 0.9767, 0.9767, 0.9832, 0.9827, 0.9827, 0.9802, 0.9782, 0.9766, 0.9766, 0.9767, 0.9643, 0.9653, 0.9631, 0.9666, 0.9685, 0.9535, 0.9535, 0.9535, 0.9477, 0.9518, 0.9518, 0.9518, 0.9468, 0.9519, 0.9552, 0.9552, 0.9501, 0.9354, 0.9377, 0.9377, 0.9405, 0.944, 0.9448, 0.9448, 0.9432, 0.9348, 0.9372, 0.9403, 0.9403, 0.9586, 0.9586, 0.971, 0.974, 0.993, 0.9988, 0.9988, 1.0068, 1.0068, 1.0068, 0.9938, 0.9938, 0.9938, 0.9938, 0.9967, 0.9896, 0.986, 0.986, 0.9855, 0.9824, 0.9821, 0.9821, 0.988, 1.0072, 1.0269, 1.0313, 1.0205, 1.015, 1.0159, 1.0159, 1.0357, 1.0462, 1.0666, 1.0541, 1.0435, 1.0458, 1.044, 1.0409, 1.0612, 1.0612, 1.0666, 1.0752, 1.0752, 1.0585, 1.0792, 1.0877, 1.0917, 1.0882, 1.0713, 1.0547, 1.0384, 1.0586, 1.0793, 1.1003, 1.1218, 1.1157, 1.1374, 1.135, 1.1302, 1.1302, 1.1127, 1.1268, 1.1309, 1.1241, 1.1277, 1.1277, 1.1288, 1.1221, 1.1316, 1.1227, 1.1284, 1.1109, 1.1096, 1.1096, 1.1155, 1.1121, 1.109, 1.1075, 1.1095, 1.1068, 1.0896, 1.0887, 1.0784, 1.0835, 1.0834, 1.0834, 1.0666, 1.0621, 1.0655, 1.0548, 1.0652, 1.0597, 1.0433, 1.0407, 1.0407, 1.0407, 1.0445, 1.0468, 1.0342, 1.0342, 1.0182, 1.0095, 1.0147, 1.0122, 1.0122, 1.0125, 0.9968, 0.9938, 0.9961, 0.9961, 1.0084, 1.0058, 0.9969, 1.0024, 1.0021, 1.0002, 0.9896, 0.9845, 0.984, 0.9845, 0.9845, 0.9857, 0.9803, 0.9808, 0.9796, 0.977, 0.977, 0.983, 0.9739, 0.9739, 0.9588, 0.9521, 0.9521, 0.9373, 0.9373, 0.9306, 0.929, 0.9331, 0.9328, 0.9328, 0.9342, 0.9277, 0.9329, 0.9315, 0.9343, 0.93, 0.93, 0.9303, 0.9363, 0.9341, 0.9337, 0.9337, 0.9346, 0.9304, 0.9331, 0.9406, 0.9406, 0.9467, 0.959, 0.954, 0.9527, 0.9515, 0.9519, 0.962, 0.962, 0.962, 0.9628, 0.976, 0.9733, 0.9727, 0.9699, 0.9699, 0.9688, 0.9676, 0.9633, 0.962, 0.9628, 0.9679, 0.9679, 0.96, 0.9623, 0.9572, 0.9531, 0.9645, 0.9753, 0.9753, 0.9753, 0.9725, 0.9725, 0.9725, 0.9725, 0.9683, 0.9654, 0.9654, 0.9583, 0.9603, 0.9633, 0.9633, 0.9554, 0.9406, 0.9473, 0.9408, 0.9422, 0.9422, 0.9339, 0.9339, 0.9303, 0.9159, 0.9225, 0.9222, 0.9222, 0.9165, 0.9165, 0.931, 0.9356, 0.9409, 0.9409, 0.942, 0.9398, 0.9416, 0.9425, 0.9317, 0.9317, 0.9332, 0.9346, 0.9442, 0.9442, 0.9364, 0.9411, 0.944, 0.9405, 0.9405, 0.9405, 0.9382, 0.9393, 0.9247, 0.9263, 0.9287, 0.9314, 0.9356, 0.9291, 0.9284, 0.9284, 0.9254, 0.9254, 0.9254, 0.9254, 0.9111, 0.9018, 0.9018, 0.9018, 0.8927, 0.8901, 0.8828, 0.891, 0.9084, 0.905, 0.9026, 0.8886, 0.8823, 0.8785, 0.8765, 0.872, 0.872, 0.8816, 0.8988, 0.8963, 0.9019, 0.9165, 0.9145, 0.9071, 0.9118, 0.912, 0.9298, 0.9339, 0.9246, 0.9246, 0.9202, 0.9202, 0.93, 0.9324, 0.9298, 0.9298, 0.9298, 0.9311, 0.9299, 0.9349, 0.9277, 0.9253, 0.9245, 0.9229, 0.9258, 0.9268, 0.9416, 0.943, 0.9284, 0.9284, 0.9321, 0.934, 0.9211, 0.922, 0.9129, 0.9115, 0.9051, 0.9055, 0.9055, 0.9011, 0.902, 0.9005, 0.9144, 0.9144, 0.9129, 0.9092, 0.908, 0.908, 0.9116, 0.9127, 0.9007, 0.898, 0.911, 0.911, 0.8969, 0.8953, 0.895, 0.8976, 0.8976, 0.8976, 0.8976, 0.8955, 0.8955, 0.896, 0.9033, 0.9027, 0.8932, 0.891, 0.895, 0.8929, 0.8929, 0.9078, 0.9078, 0.9052, 0.9193, 0.905, 0.905, 0.9061, 0.8921, 0.8941, 0.8954, 0.8954, 0.8954, 0.8954, 0.8971, 0.9025, 0.8923, 0.9009, 0.9185, 0.9185, 0.9317, 0.934, 0.934, 0.934, 0.934, 0.9373, 0.9491, 0.9422, 0.9389, 0.9361, 0.9361, 0.9479, 0.9404, 0.9404, 0.9404, 0.9394, 0.9366, 0.9366, 0.9356, 0.9283, 0.9167, 0.9167, 0.9167, 0.9219, 0.9363, 0.9405, 0.9431, 0.9411, 0.9434, 0.947, 0.9464, 0.9477, 0.946, 0.9405, 0.9405, 0.9405, 0.956, 0.9493, 0.9428, 0.9436, 0.9486, 0.9486, 0.9486, 0.9476, 0.9476, 0.9444, 0.946, 0.946, 0.9436, 0.9289, 0.9384, 0.9322, 0.9268, 0.9268, 0.9246, 0.9103, 0.9093, 0.9093, 0.909, 0.9086, 0.9049, 0.9158, 0.9202, 0.9266, 0.9259, 0.9195, 0.9201, 0.9201, 0.9144, 0.9144, 0.9215, 0.9215, 0.9215, 0.9215, 0.9226, 0.9315, 0.9271, 0.9218, 0.9218, 0.9218, 0.9114, 0.9114, 0.9051, 0.9051, 0.9072, 0.9072, 0.8931, 0.8959, 0.8959, 0.8933, 0.8933, 0.8946, 0.8945, 0.8979, 0.9034, 0.9056, 0.9088, 0.9109], "B_1.5": [1.0, 0.9986, 0.9932, 0.9794, 0.9774, 0.9696, 0.9695, 0.9695, 0.9759, 0.9754, 0.9754, 0.9729, 0.9709, 0.9693, 0.9693, 0.9616, 0.9541, 0.9551, 0.953, 0.9564, 0.9583, 0.9504, 0.9504, 0.9504, 0.9434, 0.9474, 0.9474, 0.9474, 0.9391, 0.9441, 0.9475, 0.9475, 0.9424, 0.9332, 0.9355, 0.9355, 0.9382, 0.9417, 0.9425, 0.9425, 0.941, 0.9326, 0.9349, 0.938, 0.938, 0.9516, 0.9516, 0.9654, 0.9684, 0.9824, 0.9967, 0.9967, 1.0046, 1.0046, 1.0046, 0.9983, 0.9983, 0.9983, 0.9983, 1.0012, 0.9941, 0.9905, 0.9905, 0.9845, 0.9814, 0.9713, 0.9713, 0.9771, 0.9913, 1.0056, 0.9958, 0.9846, 0.972, 0.9728, 0.9728, 0.9869, 1.0013, 1.0158, 1.0036, 0.9898, 0.992, 0.9839, 0.9753, 0.9894, 0.9894, 0.9944, 1.0024, 1.0024, 0.9923, 1.0067, 1.0147, 1.0184, 1.0152, 0.986, 1.0003, 0.9869, 1.0012, 1.0157, 1.0304, 1.0454, 1.0339, 1.0489, 1.0467, 1.0423, 1.0423, 1.0273, 1.0422, 1.046, 1.0329, 1.0362, 1.0362, 1.0373, 1.0311, 1.0398, 1.0316, 1.0369, 1.0265, 1.0252, 1.0252, 1.0307, 1.0275, 1.0194, 1.0181, 1.0199, 1.0175, 1.0109, 1.01, 1.0005, 1.0051, 1.005, 1.005, 0.9985, 0.9942, 0.9974, 0.9862, 0.98, 0.9749, 0.967, 0.9646, 0.9646, 0.9646, 0.9681, 0.9703, 0.9631, 0.9631, 0.946, 0.9371, 0.9304, 0.9281, 0.9281, 0.9284, 0.9203, 0.9176, 0.9196, 0.9196, 0.9329, 0.9306, 0.9232, 0.9284, 0.9281, 0.9263, 0.9166, 0.9117, 0.9071, 0.9075, 0.9075, 0.9086, 0.9037, 0.9041, 0.903, 0.9006, 0.9006, 0.9062, 0.8987, 0.8987, 0.8899, 0.8837, 0.8837, 0.8701, 0.8701, 0.8638, 0.8623, 0.8661, 0.8659, 0.8659, 0.8672, 0.8613, 0.8662, 0.8648, 0.8674, 0.8635, 0.8635, 0.8638, 0.8694, 0.8673, 0.8593, 0.8593, 0.8505, 0.845, 0.8475, 0.8411, 0.8411, 0.8466, 0.8588, 0.8544, 0.8532, 0.8522, 0.8525, 0.8649, 0.8649, 0.8649, 0.8656, 0.8781, 0.8757, 0.8751, 0.8726, 0.8726, 0.8716, 0.8706, 0.8667, 0.8655, 0.8663, 0.8708, 0.8708, 0.8637, 0.8658, 0.8585, 0.8504, 0.8628, 0.8753, 0.8753, 0.8753, 0.8728, 0.8728, 0.8728, 0.8728, 0.869, 0.8664, 0.8664, 0.8601, 0.8619, 0.8645, 0.8645, 0.8538, 0.8429, 0.8489, 0.8431, 0.8443, 0.8443, 0.8355, 0.8355, 0.8322, 0.8194, 0.8253, 0.8251, 0.8251, 0.82, 0.82, 0.8319, 0.836, 0.8407, 0.8407, 0.8417, 0.8398, 0.8413, 0.8422, 0.8325, 0.8325, 0.8338, 0.8351, 0.8437, 0.8437, 0.8394, 0.8436, 0.8462, 0.8431, 0.8431, 0.8431, 0.841, 0.842, 0.8307, 0.8322, 0.8343, 0.8367, 0.8405, 0.8326, 0.8319, 0.8319, 0.8293, 0.8293, 0.8293, 0.8293, 0.8198, 0.813, 0.813, 0.813, 0.806, 0.8036, 0.7971, 0.8086, 0.8204, 0.8119, 0.8098, 0.8023, 0.7935, 0.7901, 0.7883, 0.7842, 0.7842, 0.7929, 0.8044, 0.8022, 0.8072, 0.8189, 0.8171, 0.8105, 0.8147, 0.8149, 0.8267, 0.8303, 0.8221, 0.8221, 0.8144, 0.8144, 0.8262, 0.8283, 0.826, 0.826, 0.826, 0.8271, 0.8261, 0.8305, 0.8242, 0.8167, 0.8161, 0.8146, 0.8172, 0.8181, 0.83, 0.8312, 0.8259, 0.8259, 0.8291, 0.8309, 0.8194, 0.8202, 0.8132, 0.8079, 0.8022, 0.8026, 0.8026, 0.7987, 0.7995, 0.7981, 0.8097, 0.8097, 0.8084, 0.8051, 0.8041, 0.8041, 0.8073, 0.819, 0.8082, 0.8058, 0.8175, 0.8175, 0.811, 0.8096, 0.8093, 0.8117, 0.8117, 0.8117, 0.8117, 0.8098, 0.8098, 0.8102, 0.8168, 0.8163, 0.8102, 0.8082, 0.8044, 0.8025, 0.8025, 0.8141, 0.8141, 0.8118, 0.8236, 0.8058, 0.8058, 0.8068, 0.7969, 0.7987, 0.7999, 0.7999, 0.7999, 0.7999, 0.8014, 0.8062, 0.797, 0.8047, 0.8163, 0.8163, 0.8282, 0.8302, 0.8302, 0.8302, 0.8302, 0.8331, 0.8437, 0.8347, 0.8317, 0.8293, 0.8293, 0.8413, 0.8347, 0.8347, 0.8347, 0.8338, 0.8313, 0.8313, 0.8304, 0.8239, 0.8172, 0.8172, 0.8172, 0.8219, 0.8338, 0.8375, 0.8399, 0.8381, 0.8401, 0.8434, 0.8428, 0.844, 0.8425, 0.8375, 0.8375, 0.8375, 0.8497, 0.8438, 0.838, 0.8387, 0.8431, 0.8431, 0.8431, 0.8422, 0.8422, 0.8394, 0.8408, 0.8408, 0.8386, 0.8352, 0.8437, 0.8382, 0.8333, 0.8333, 0.8313, 0.8203, 0.8194, 0.8194, 0.8191, 0.8188, 0.8154, 0.8252, 0.8292, 0.835, 0.8344, 0.8286, 0.8291, 0.8291, 0.824, 0.824, 0.8304, 0.8304, 0.8304, 0.8304, 0.8314, 0.8394, 0.8354, 0.8307, 0.8307, 0.8307, 0.8238, 0.8238, 0.8181, 0.8181, 0.82, 0.82, 0.8088, 0.8114, 0.8114, 0.809, 0.809, 0.8102, 0.8101, 0.8132, 0.8182, 0.8201, 0.8231, 0.825], "B_2": [1.0, 0.9986, 0.9932, 0.9794, 0.9774, 0.9696, 0.9695, 0.9695, 0.9759, 0.9754, 0.9754, 0.9729, 0.9709, 0.9693, 0.9693, 0.9616, 0.9541, 0.9551, 0.953, 0.9564, 0.9583, 0.9504, 0.9504, 0.9504, 0.9434, 0.9474, 0.9474, 0.9474, 0.9391, 0.9441, 0.9475, 0.9475, 0.9424, 0.9332, 0.9355, 0.9355, 0.9382, 0.9417, 0.9425, 0.9425, 0.941, 0.9326, 0.9349, 0.938, 0.938, 0.9563, 0.9563, 0.9687, 0.9717, 0.9906, 0.9964, 0.9964, 1.0043, 1.0043, 1.0043, 0.9981, 0.9981, 0.9981, 0.9981, 1.001, 0.9938, 0.9902, 0.9902, 0.9843, 0.9811, 0.971, 0.971, 0.9769, 0.9959, 1.0153, 1.0054, 0.9941, 0.9814, 0.9822, 0.9822, 1.0014, 1.0115, 1.0312, 1.0188, 1.0049, 1.0071, 0.9989, 0.9901, 1.0094, 1.0094, 1.0146, 1.0227, 1.0227, 1.0124, 1.0322, 1.0403, 1.0441, 1.0408, 1.0109, 1.0306, 1.0168, 1.0366, 1.0568, 1.0774, 1.0985, 1.0864, 1.1076, 1.1052, 1.1006, 1.1006, 1.0848, 1.0985, 1.1025, 1.0888, 1.0922, 1.0922, 1.0934, 1.0868, 1.096, 1.0874, 1.0929, 1.082, 1.0807, 1.0807, 1.0864, 1.0831, 1.0746, 1.0731, 1.0751, 1.0725, 1.0655, 1.0646, 1.0546, 1.0595, 1.0594, 1.0594, 1.0524, 1.048, 1.0513, 1.0396, 1.033, 1.0277, 1.0193, 1.0168, 1.0168, 1.0168, 1.0205, 1.0227, 1.0151, 1.0152, 0.9972, 0.9878, 0.9807, 0.9783, 0.9783, 0.9786, 0.9701, 0.9672, 0.9693, 0.9693, 0.9813, 0.9788, 0.9711, 0.9765, 0.9762, 0.9743, 0.964, 0.9589, 0.9541, 0.9546, 0.9546, 0.9557, 0.9505, 0.951, 0.9498, 0.9473, 0.9473, 0.9531, 0.9453, 0.9453, 0.936, 0.9295, 0.9295, 0.9152, 0.9152, 0.9086, 0.907, 0.911, 0.9108, 0.9108, 0.9121, 0.906, 0.911, 0.9097, 0.9124, 0.9082, 0.9082, 0.9085, 0.9144, 0.9122, 0.9038, 0.9038, 0.8946, 0.8888, 0.8914, 0.8847, 0.8847, 0.8904, 0.902, 0.8973, 0.8961, 0.895, 0.8954, 0.9049, 0.9049, 0.9049, 0.9056, 0.918, 0.9155, 0.9149, 0.9123, 0.9123, 0.9112, 0.9101, 0.906, 0.9049, 0.9056, 0.9104, 0.9104, 0.903, 0.9051, 0.8975, 0.8891, 0.8997, 0.9098, 0.9098, 0.9098, 0.9073, 0.9073, 0.9073, 0.9073, 0.9033, 0.9006, 0.9006, 0.894, 0.8959, 0.8986, 0.8987, 0.8875, 0.8762, 0.8824, 0.8763, 0.8777, 0.8777, 0.8685, 0.8684, 0.8651, 0.8518, 0.8579, 0.8577, 0.8577, 0.8524, 0.8524, 0.8659, 0.8701, 0.875, 0.875, 0.8761, 0.874, 0.8757, 0.8765, 0.8665, 0.8665, 0.8679, 0.8692, 0.8781, 0.8781, 0.8737, 0.8781, 0.8808, 0.8775, 0.8775, 0.8775, 0.8754, 0.8764, 0.8646, 0.8661, 0.8684, 0.8709, 0.8748, 0.8665, 0.8659, 0.8659, 0.8631, 0.8631, 0.8631, 0.8631, 0.8533, 0.8461, 0.8461, 0.8461, 0.8389, 0.8364, 0.8296, 0.8373, 0.8537, 0.8449, 0.8426, 0.8349, 0.8257, 0.8221, 0.8203, 0.816, 0.816, 0.825, 0.8411, 0.8388, 0.8441, 0.8578, 0.8558, 0.8489, 0.8533, 0.8536, 0.8702, 0.874, 0.8653, 0.8653, 0.8572, 0.8572, 0.8664, 0.8686, 0.8662, 0.8662, 0.8662, 0.8673, 0.8663, 0.8709, 0.8642, 0.8564, 0.8557, 0.8542, 0.8569, 0.8579, 0.8716, 0.8729, 0.8673, 0.8673, 0.8707, 0.8725, 0.8605, 0.8613, 0.854, 0.8484, 0.8424, 0.8428, 0.8428, 0.8387, 0.8395, 0.8381, 0.8511, 0.8511, 0.8497, 0.8462, 0.8452, 0.8452, 0.8485, 0.8496, 0.8384, 0.8359, 0.848, 0.848, 0.8413, 0.8398, 0.8395, 0.842, 0.842, 0.842, 0.842, 0.84, 0.84, 0.8405, 0.8473, 0.8467, 0.8405, 0.8384, 0.8344, 0.8324, 0.8324, 0.8463, 0.8463, 0.8439, 0.857, 0.8385, 0.8385, 0.8395, 0.8292, 0.8311, 0.8324, 0.8324, 0.8324, 0.8324, 0.8339, 0.8389, 0.8293, 0.8373, 0.8536, 0.8536, 0.8659, 0.868, 0.868, 0.868, 0.868, 0.8711, 0.8821, 0.8727, 0.8696, 0.8671, 0.8671, 0.8779, 0.871, 0.871, 0.871, 0.8701, 0.8675, 0.8675, 0.8665, 0.8598, 0.8528, 0.8528, 0.8528, 0.8576, 0.871, 0.8749, 0.8774, 0.8755, 0.8776, 0.881, 0.8804, 0.8817, 0.8801, 0.8749, 0.8749, 0.8749, 0.8893, 0.8831, 0.8771, 0.8778, 0.8825, 0.8825, 0.8825, 0.8815, 0.8815, 0.8786, 0.88, 0.88, 0.8778, 0.8742, 0.8831, 0.8773, 0.8722, 0.8722, 0.8701, 0.8586, 0.8576, 0.8576, 0.8574, 0.857, 0.8534, 0.8638, 0.8679, 0.8739, 0.8733, 0.8673, 0.8678, 0.8678, 0.8625, 0.8625, 0.8691, 0.8691, 0.8691, 0.8691, 0.8702, 0.8786, 0.8744, 0.8695, 0.8695, 0.8695, 0.8623, 0.8623, 0.8563, 0.8563, 0.8583, 0.8583, 0.8466, 0.8492, 0.8492, 0.8467, 0.8467, 0.848, 0.8479, 0.8511, 0.8564, 0.8584, 0.8615, 0.8635]}};
+const SER = [["A_1.5","A · alvo 1,5%","--s1",[]],["A_2","A · alvo 2%","--s2",[6,3]],["B_1.5","B · alvo 1,5%","--s3",[]],["B_2","B · alvo 2%","--s4",[6,3]],["bh","Comprar e segurar","--bh",[2,2]]];
+const charts = [];
+function cor(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function desenhar() {
+  charts.forEach(c => c.destroy()); charts.length = 0;
+  const fg2 = cor("--fg2"), line = cor("--line");
+  for (const [ativo, d] of Object.entries(D)) {
+    const el = document.getElementById("c_" + ativo); if (!el) continue;
+    charts.push(new Chart(el, { type: "line",
+      data: { labels: d.labels, datasets: SER.map(([k, n, c, dash]) => ({ label: n, data: d[k], borderColor: cor(c), backgroundColor: cor(c),
+        borderWidth: 2, borderDash: dash, pointRadius: 0, pointHoverRadius: 4, tension: 0 })) },
+      options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
+        scales: { x: { ticks: { color: fg2, maxTicksLimit: 8, maxRotation: 0 }, grid: { display: false } },
+                  y: { ticks: { color: fg2, callback: v => v.toFixed(2).replace(".", ",") }, grid: { color: line } } },
+        plugins: { legend: { labels: { color: fg2, boxWidth: 14, boxHeight: 2 } },
+          tooltip: { callbacks: { label: c => c.dataset.label + ": " + c.parsed.y.toFixed(3).replace(".", ",") } } } } }));
+  }
+}
+if (window.Chart) { desenhar(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", desenhar);
+  new MutationObserver(desenhar).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); }
+</script>
